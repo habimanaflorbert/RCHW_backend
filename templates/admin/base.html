@@ -1,0 +1,20 @@
+{% extends 'admin/base.html' %}
+{%load static %}
+{% block stylesheet %}{% static 'custom_style.css' %}{% endblock %}
+{% block responsive %}
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="{% static "responsive.css" %}">
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% static "responsive_rtl.css" %}">{% endif %} 
+{% endblock %}
+
+
+  <link rel="stylesheet" type="text/css" href="{% static "nav_sidebar.css" %}">
+  <script src="{% static 'admin/js/nav_sidebar.js' %}" defer></script>
+{% if not is_popup and is_nav_sidebar_enabled %}
+  <link rel="stylesheet" type="text/css" href="{% static "adin/css/nav_sidebar.css" %}">
+  <script src="{% static 'admin/js/nav_sidebar.js' %}" defer></script>
+{% endif %}
+
+{% block extrastyle %}{{ block.super }}
+
+{% endblock %}
