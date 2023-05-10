@@ -1,3 +1,6 @@
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
+
 from rest_framework import serializers
 from accounts.models import User,Sector,Village,UserAddress,Province,District
 
@@ -6,37 +9,40 @@ class ProvinceSerializer(serializers.ModelSerializer):
     class Meta:
         model=Province
         fields=(
+            'id',
             'name'
         )
 
 class DistrictSerializer(serializers.ModelSerializer):
-    province=ProvinceSerializer(source='province',read_only=True)
+    province_detail=ProvinceSerializer(source='province',read_only=True)
     class Meta:
         model=District
         fields=(
+            'id',
             'name',
-            'province'
+            'province_detail'
         )
 
 class SectorSerializer(serializers.ModelSerializer):
-    district=DistrictSerializer(source='district',read_only=True)
+    district_detail=DistrictSerializer(source='district',read_only=True)
     class Meta:
         model=Sector
         fields=(
+            'id',
             'name',
-            'district',
+            'district_detail',
         )
 
 
 
 class VillageSerializer(serializers.ModelSerializer):
-    sector=DistrictSerializer(source='district',read_only=True)
+    sector_detail=SectorSerializer(source='sector',read_only=True)
     class Meta:
         model=Village
         fields=(
             'id',
             'name',
-            'sector'
+            'sector_detail'
         )
 
 class AccountCreationSerializer(serializers.ModelSerializer):
@@ -90,3 +96,25 @@ class UserSerializer(serializers.ModelSerializer):
             'contraception_month'
         )
 
+
+class UserPasswordSerializer(serializers.ModelSerializer):
+    recent_password=serializers.CharField(required=True)
+    new_password=serializers.CharField(required=True)
+    user= serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    def validate(self,data):
+        if check_password(data.get('recent_password'), data.get('user').password):
+            if data.get('new_password') != data['recent_password']:
+                return data
+            raise  serializers.ValidationError("Password don't match")
+        raise serializers.ValidationError("Use Correct password")
+    
+    class Meta:
+        model=User
+        fields=(
+            'id',
+            'recent_password',
+            'new_password',
+            'user'
+        )
+    

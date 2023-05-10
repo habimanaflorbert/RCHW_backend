@@ -26,7 +26,7 @@ class PatientSerializer(serializers.ModelSerializer):
 
 class HouseHoldSerializer(serializers.ModelSerializer):
     worker_detail=UserSerializer(source='worker',read_only=True)
-    village_detail=VillageSerializer(source='village')
+    village_detail=VillageSerializer(source='village',read_only=True)
     worker = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model=HouseHold

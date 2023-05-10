@@ -11,7 +11,7 @@ from home.serializers import PatientSerializer,HouseHoldSerializer,MalnutritionS
 
 # Create your views here.
 
-class PatientViewset(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+class PatientViewset(viewsets.ModelViewSet):
     serializer_class = PatientSerializer
     permission_classes = [BasePermission]
     queryset = Patient.objects.all()
@@ -20,8 +20,20 @@ class PatientViewset(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.Ge
     def get_queryset(self):
         return Patient.objects.filter(worker=self.request.user)
 
+    @action(['GET'],detail=False)
+    def details(self,request):
+        try:
+            id=request.GET.get('id')
+            query=Patient.objects.get(id=id)
+            serializer = self.get_serializer(query)
+           
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Patient.DoesNotExist:
+            return Response({},status=status.HTTP_200_OK)
+    
 
     def create(self, request, *args, **kwargs):
+
         serializer = self.get_serializer(
             data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -29,28 +41,44 @@ class PatientViewset(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.Ge
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def partial_update(self, request, *args, **kwargs):
-        instance = request.user
+
+        instance=self.get_object()
         serializer = self.get_serializer(
             instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
+    
 
-class HouseHoldViewset(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    @action(['DELETE'],detail=False)
+    def delete(self,request):
+        ob=Patient.objects.filter(id=self.GET.get('id'),worker=self.request.user)
+        if ob.exists():
+            ob.delete()
+            return Response({"msg":"has deleted"})
+        return Response({"msg":"no data found"})
+
+
+
+class HouseHoldViewset(viewsets.ModelViewSet):
     serializer_class = HouseHoldSerializer
     permission_classes = [BasePermission]
-    queryset = Patient.objects.all()
+    queryset = HouseHold.objects.all()
 
 
     def get_queryset(self):
-        print()
-        print()
-        print(self.request.user.user_village)
-        print()
-
-        print()
-
         return HouseHold.objects.filter(village__id=self.request.user.user_village)
 
+    @action(['GET'],detail=False)
+    def details(self,request):
+        try:
+            id=request.GET.get('id')
+            query=HouseHold.objects.get(id=id)
+            serializer = self.get_serializer(query)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except HouseHold.DoesNotExist:
+            return Response({},status=status.HTTP_200_OK)
+        
 
     def create(self, request, *args, **kwargs):
 
@@ -61,27 +89,46 @@ class HouseHoldViewset(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def partial_update(self, request, *args, **kwargs):
-        instance = request.user
+        instance = self.get_object()
         serializer = self.get_serializer(
             instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
 
+    @action(['DELETE'],detail=False)
+    def delete(self,request):
+        ob=HouseHold.objects.filter(id=self.request.GET.get('id'),worker=self.request.user)
+        if ob.exists():
+            ob.delete()
+            return Response({"msg":"has deleted"})
+        return Response({"msg":"no data found"})
 
-class MalnutritionViewset(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+
+
+
+class MalnutritionViewset(viewsets.ModelViewSet):
     serializer_class = MalnutritionSerializer
     permission_classes = [BasePermission]
     queryset = Malnutrition.objects.all()
 
 
     def get_queryset(self):
-        return Malnutrition.objects.filter(family__village=self.request.user.user_address)
+        return Malnutrition.objects.filter(family__village=self.request.user.user_village)
 
+    @action(['GET'],detail=False)
+    def details(self,request):
+
+        try:
+            id=request.GET.get('id')
+            query=Malnutrition.objects.get(id=id)
+            serializer = self.get_serializer(query)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Malnutrition.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
 
     def create(self, request, *args, **kwargs):
-        print()
-        print(request.data)
-        print()
 
         serializer = self.get_serializer(
             data=request.data)
@@ -90,22 +137,41 @@ class MalnutritionViewset(mixins.ListModelMixin, mixins.CreateModelMixin, viewse
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def partial_update(self, request, *args, **kwargs):
-        instance = request.user
+        instance =self.get_object()
         serializer = self.get_serializer(
             instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
+    
+    @action(['DELETE'],detail=False)
+    def delete(self,request):
+        ob=Malnutrition.objects.filter(id=self.GET.get('id'),worker=self.request.user)
+        if ob.exists():
+            ob.delete()
+            return Response({"msg":"has deleted"})
+        return Response({"msg":"no data found"})
 
 
-class ContraceptionViewset(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+
+class ContraceptionViewset(viewsets.ModelViewSet):
     serializer_class = ContraceptionSerializer
     permission_classes = [BasePermission]
     queryset = Contraception.objects.all()
 
-
-    def get_queryset(self):
+    def get_queryset(self): 
         return Contraception.objects.filter(worker=self.request.user)
 
+    @action(['GET'],detail=False)
+    def details(self,request):
+        try:
+            id=request.GET.get('id')
+            query=Contraception.objects.get(id=id,worker=self.request.user)
+            serializer = self.get_serializer(query)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Contraception.DoesNotExist:
+            return Response({},status=status.HTTP_200_OK)
+        
 
     def create(self, request, *args, **kwargs):
 
@@ -115,9 +181,17 @@ class ContraceptionViewset(mixins.ListModelMixin, mixins.CreateModelMixin, views
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def partial_update(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         instance = request.user
         serializer = self.get_serializer(
             instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data)
+    
+    @action(['DELETE'],detail=False)
+    def delete(self,request):
+        ob=Contraception.objects.filter(id=request.GET.get('id'),worker=self.request.user)
+        if ob.exists():
+            ob.delete()
+            return Response({"msg":"has deleted"})
+        return Response({"msg":"no data found"})

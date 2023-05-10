@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny,BasePermission
 from rest_framework.decorators import api_view
 
 from accounts.models import User,Village
-from accounts.serializers import AccountCreationSerializer,VillageSerializer,UserSerializer
+from accounts.serializers import AccountCreationSerializer,VillageSerializer,UserSerializer,UserPasswordSerializer
 from rest_framework.decorators import action
 # Create your views here.
 
@@ -24,7 +24,11 @@ class AccountCreationViewset(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'user_me':
             return UserSerializer
+        elif self.action=='password':
+            return UserPasswordSerializer
         return super().get_serializer_class()
+
+
     def get_queryset(self):
         return User.objects.filter(id=self.request.user.id)
 
@@ -37,6 +41,19 @@ class AccountCreationViewset(viewsets.ModelViewSet):
             return Response(serializer.data)
         except User.DoesNotExist:
             return Response({})
+    
+    @action(['POST'],detail=False)
+    def password(self,request):
+   
+        serializer = self.get_serializer(
+            data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data.get('user').set_password(serializer.validated_data.get("new_password"))
+        serializer.validated_data.get('user').save()
+        return Response({"mg":"password changed"}, status=status.HTTP_201_CREATED)
+
+
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(
             data=request.data)
@@ -46,9 +63,6 @@ class AccountCreationViewset(viewsets.ModelViewSet):
     
     def patch(self, request, *args, **kwargs):
         instance = request.user
-        print()
-        print(request.data)
-        print()
         serializer = self.get_serializer(
             instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)

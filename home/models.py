@@ -37,7 +37,7 @@ class HouseHold(models.Model):
     mother_full_name=models.CharField(max_length=250)
     mother_id_no= models.CharField(_("mother_identification_number"),max_length=16)
     number_child=models.IntegerField(default=0)
-    phone_number=models.CharField(max_length=10)
+    phone_number=models.CharField(max_length=16)
     worker=models.ForeignKey(User,related_name='umujyanama_family',on_delete=models.CASCADE)
     village=models.ForeignKey(Village,related_name='family_village',on_delete=models.CASCADE)
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
@@ -85,10 +85,9 @@ class Contraception(models.Model):
     class Meta:
         verbose_name = _("Contraception")
         verbose_name_plural = _("Contraception")
-        ordering = ('family',)
+        ordering = ('-created_on',)
 
-    def __str__(self):
-            return self.family
+
 
     def get_absolute_url(self):
         return reverse("contraception_detail", kwargs={"pk": self.pk})
