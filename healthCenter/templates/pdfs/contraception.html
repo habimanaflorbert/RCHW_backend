@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+      {% load static %}
+      <link href="{% static 'City Plus.png' %}" rel="shortcut icon"/>
+
+        <title>Title</title>
+
+        <style type="text/css">
+          body{
+            padding-top: 10px;
+            padding:5px;
+          }
+
+            .header {
+                font-size: 15px;
+                font-weight: 100;
+                text-align: center;
+                color:black;
+                
+            }
+            .title {
+                font-size: 22px;
+                font-weight: 100;
+               /* text-align: right;*/
+               padding: 10px 20px 0px 20px;  
+            }
+            .title span {
+                color: #007cae;
+            }
+           
+            
+            .date{
+              text-align: right;
+            }
+           .daked{
+           background-color: #000;
+           color:white;
+           padding-top: 2px;
+           width: 100%;
+
+            }
+            
+            @page{
+              size: letter landscape;
+              padding: 2cm;
+     
+            }
+         
+        </style>
+    </head>
+    <body>
+        
+          <div class="date">
+            {{today}}
+          </div>
+            <div class='header'>
+                <p>{{request.user.full_name}}</p>
+              </div>
+
+        <div>
+<center><h1>Malnutrition Report from {{start}} to {{to}} </h1></center>
+
+          <table id="table"  border="1" style="padding-top: 10px;">
+            <thead class="daked">
+              <tr class="daked">
+                <th>Family Names</th>
+                <th>Worker</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%for dt in all_mal%}
+
+              <tr style="padding-top: 10px;">
+                <td class="capitialise">{{dt.child_full_name|title}}   {{dt.lastname|title}}</td>
+                <td>{{dt.family.father_full_name|title}}
+                </br>
+                {{dt.family.mother_full_name|title}}
+                </td>
+                <td>{{dt.worker}}</td>
+                <td>{{dt.created_on}}</td>
+              </tr>
+        
+            {% endfor%}
+            
+          
+            </tbody>
+          </table>
+    </div>
+    <hr>
+    <p style="text-align:center;"><i>Rwanda Health Worker</i></p>
+    </body>
+</html>
