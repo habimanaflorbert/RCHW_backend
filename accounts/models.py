@@ -52,6 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     ADMIN="ADMIN"
     UMUJYANAMA="UMUJYANAMA"
+    HC="HC"
     STAFF="STAFF"
     RSSB="RSSB"
     RAMA="RAMA"
@@ -61,6 +62,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         (ADMIN,"Super User"),
         (STAFF,"Staff User"),
         (UMUJYANAMA,"Umujyana"),
+        (HC,"Health Center"),
        
     )
 
@@ -80,6 +82,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_("is active"), default=True)
     # a admin user; non super-user
     is_staff = models.BooleanField(_("staff"), default=False)
+    is_first_login = models.BooleanField(_("staff"), default=True)
 
     admin = models.BooleanField(_("admin"), default=False)  # a admin
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
@@ -138,6 +141,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def contraception_month(self):
         return self.umujyanama_contraception.all().count()
+    @property
+    def clinic_members(self):
+        return self.clinic.members.all()
 
 class Province(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
@@ -225,3 +231,16 @@ class UserAddress(models.Model):
     def get_absolute_url(self):
         return reverse("user_address_detail", kwargs={"pk": self.pk})
 
+
+class ClinicWorker(models.Model):
+    clinic=models.OneToOneField(User,related_name='clinic',on_delete=models.CASCADE)
+    members=models.ManyToManyField(User,related_name='members')
+
+    class Meta:
+        verbose_name = _("Clinic")
+        verbose_name_plural = _("Clinics")
+        ordering = ('clinic',)
+
+
+    def get_absolute_url(self):
+        return reverse("clinic_detail", kwargs={"pk": self.pk})

@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.23/dist/css/uikit.min.css" />
+ <title> {% block title%} {% endblock%}</title>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifford: '#da373d',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .AppBgColor{
+        background-color:#193c02;
+        
+    }
+    .AppColor{
+        color:#193c02;
+    }
+    .AppBgColor:hover{
+        background-color:#367c07
+    }
+  </style>
+</head>
+<body>
+ {% block body%}
+ {% endblock %}
+</body>
+</html>

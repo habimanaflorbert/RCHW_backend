@@ -8,6 +8,7 @@ class PatientAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'sickness','worker','created_on')
     list_display_links = ['full_name']
     search_fields = ['sickness','full_name']
+   
 
 @admin.register(HouseHold)
 class HouseHoldAdmin(admin.ModelAdmin):
@@ -20,6 +21,7 @@ class MalnutritionAdmin(admin.ModelAdmin):
     list_display = ('family', 'child_full_name','has_malnutrition')
     list_display_links = ['family']
     search_fields = ['child_full_name','family']
+   
 
 
 
@@ -28,3 +30,4 @@ class ContraceptionAdmin(admin.ModelAdmin):
     list_display = ('family','created_on')
     list_display_links = ['family']
     search_fields = ['family']
+  

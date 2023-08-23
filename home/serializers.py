@@ -19,6 +19,8 @@ class PatientSerializer(serializers.ModelSerializer):
             'village_detail',
             'date_of_birth',
             'worker',
+            "symptoms",
+            "causes",
             'worker_detail',
             'created_on'
         )

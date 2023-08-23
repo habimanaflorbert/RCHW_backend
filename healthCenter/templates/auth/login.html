@@ -1,0 +1,67 @@
+{% extends 'base/base.html' %}
+{%load static%}
+{%block title%}
+Welcome RCHW
+{%endblock%}
+
+{% block body%}
+<!-- component -->
+<!-- Container -->
+<div class="flex flex-wrap min-h-screen w-full content-center justify-center bg-gray-200 py-10">
+
+    <!-- Login component -->
+    <div class="flex shadow-md">
+      <!-- Login form -->
+      <div class="flex flex-wrap content-center justify-center rounded-l-md bg-white" style="width: 24rem; height: 32rem;">
+        <div class="w-72">
+          <!-- Heading -->
+          <h1 class="text-xl font-semibold">Welcome back To RCHW Health Center Dashboard</h1>
+          <small class="text-gray-400">Please enter your details</small>
+          {% if form.errors or messages  %}
+
+          <div class="uk-alert-danger" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p class="loginfailed">Login Failed</p>
+          </div>
+    
+          {% endif%}
+          <!-- Form -->
+          <form class="mt-4" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="mb-2 block text-xs font-semibold">Email</label>
+              <input name="username" type="username" placeholder="Enter your email" class="block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-1 px-1.5 text-gray-500" />
+            </div>
+  
+            <div class="mb-3">
+              <label class="mb-2 block text-xs font-semibold">Password</label>
+              <input name="password" type="password" placeholder="*****" class="block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-1 px-1.5 text-gray-500" />
+            </div>
+  
+            <div class="mb-3 flex flex-wrap content-center">
+              <a href="#" class="text-xs font-semibold AppColor">Forgot password?</a>
+            </div>
+  
+            <div class="mb-3">
+              <button class="mb-1.5 block w-full text-center text-white AppBgColor px-2 py-1.5 font-semibold rounded-md">Sign in</button>
+              
+            </div>
+          </form>
+  
+       
+        </div>
+      </div>
+  
+      <!-- Login banner -->
+      <div class="flex flex-wrap content-center justify-center rounded-r-md" style="width: 24rem; height: 32rem;">
+        <img class="w-full h-full bg-center bg-no-repeat bg-cover rounded-r-md" src="{% static 'images/pexels-ivan-samkov-4989166.jpg'%}">
+      </div>
+  
+    </div>
+  
+    <!-- Credit -->
+    <div class="mt-3 w-full">
+        <p class="text-center">Made by <a target="_blank" href="https://www.linkedin.com/in/jambo-florbert-b30ba11ab/?originalSubdomain=rw" class="AppColor">Habimana Jambo Florbert</a>.</p>
+    </div>
+  </div>
+{%endblock%}

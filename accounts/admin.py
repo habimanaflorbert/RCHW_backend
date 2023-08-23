@@ -2,7 +2,7 @@ from django.contrib import admin
 from accounts.forms import UserAdminCreationForm, UserAdminChangeForm
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 # from django.contrib.auth import get_user_model
-from accounts.models import User,UserAddress,Province,District,Sector,Village
+from accounts.models import User,UserAddress,Province,District,Sector,Village,ClinicWorker
 
 
 class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
@@ -108,6 +108,7 @@ admin.site.register(Province)
 admin.site.register(District)
 admin.site.register(Sector)
 admin.site.register(Village)
+admin.site.register(ClinicWorker)
 
 @admin.register(UserAddress)
 class UserAddressAdmin(admin.ModelAdmin):
