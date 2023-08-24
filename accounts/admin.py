@@ -2,7 +2,7 @@ from django.contrib import admin
 from accounts.forms import UserAdminCreationForm, UserAdminChangeForm
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 # from django.contrib.auth import get_user_model
-from accounts.models import User,UserAddress,Province,District,Sector,Village,ClinicWorker
+from accounts.models import ClinicAddress,User,UserAddress,Province,District,Sector,Village,ClinicWorker
 
 
 class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
@@ -116,6 +116,11 @@ class UserAddressAdmin(admin.ModelAdmin):
     list_display_links = ['user']
     search_fields = ['user']
 
+@admin.register(ClinicAddress)
+class UserAddressAdmin(admin.ModelAdmin):
+    list_display = ('clinic', 'district')
+    list_display_links = ['clinic']
+    search_fields = ['clinic']
 
 
 admin.site.index_template='admin/admin_user.html'

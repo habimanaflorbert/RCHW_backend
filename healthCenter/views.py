@@ -11,6 +11,8 @@ from utils.pdf_generator import render_to_pdf
 from healthCenter.forms import LoginForm
 from accounts.decoration import is_health_center
 from home.models import Patient,Contraception,Malnutrition,HouseHold
+from accounts.models import Village
+from healthCenter.forms import HouseHoldForm
 
 
 # Create your views here.
@@ -144,17 +146,23 @@ def house_hold(request):
     paginator=Paginator(all_mal, 2)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
+    village=Village.objects.all()
+    form=HouseHoldForm()
 
     context={
         "all_mal":page_obj,
         "page_number":page_number,
         "count":paginator.num_pages,
-        "c_record":all_mal.count()
+        "c_record":all_mal.count(),
+        'village':village,
+        'form':form
+        
     }
     if request.method=='POST':
-        start=request.POST.get('from')
-        to=request.POST.get('to')
-        all_mal=Patient.objects.filter(worker__in=memebrs,created_on__range=[start,to])
-        pdf=render_to_pdf('pdfs/patient.html',{'count':all_mal.count(),'all_mal':all_mal,'today':date.today(),'start':start,'to':to})
-        return HttpResponse(pdf,content_type='application/pdf')
+        form=HouseHoldForm(request.POST)
+        if form.is_valid():
+            req=form.save(commit=False)
+            req.worker=request.user
+            req.save()
+        context['form']=form
     return render(request,'healtfeature/houseHold.html',context)
