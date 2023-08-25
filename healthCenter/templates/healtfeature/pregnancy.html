@@ -13,7 +13,7 @@
 <section class="container px-4 mx-auto mt-10">
     <div class="sm:flex sm:items-center sm:justify-between">
         <div>
-            <p class="mt-1 text-sm text-gray-500 ">Families list.</p>
+            <p class="mt-1 text-sm text-gray-500 ">Pregnancies list.</p>
         </div>
     </div>
 
@@ -24,6 +24,16 @@
     </div>
     {%endif%}
 
+      
+    {% if messages %}
+    <div class="uk-alert-success" uk-alert>
+      {% for message in messages %}
+      <a class="uk-alert-close" uk-close></a>
+      <p class="added">{{ message }}</p>
+      {% endfor %}
+    </div>
+    {% endif%}
+
     <div class="mt-6 md:flex md:items-center md:justify-between">
         <div class="inline-flex overflow-hidden  divide-x rounded-lg  rtl:flex-row-reverse ">
         <a href="" class="AppBgColor px-2 py-2 text-white font-semibold hover:text-white hover:no-underline">
@@ -32,7 +42,7 @@
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
                   </svg>
-                Add Family</button>
+                Add Pregnancy</button>
             </a>
         </div>
 
@@ -56,30 +66,26 @@
                             <tr>
                                 <th scope="col" class="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                     <button class="flex items-center gap-x-3 focus:outline-none">
-                                        <span>Father Full Name</span>
+                                        <span>Full Name</span>
 
                                     </button>
                                 </th>
                                 <th scope="col" class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    Father Identification
+                                    Description
                                 </th>
                                 <th scope="col" class="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                     <button class="flex items-center gap-x-3 focus:outline-none">
-                                        <span>Mother Full Name</span>
-
+                                        <span>Phone Number</span>
                                     </button>
                                 </th>
                                 <th scope="col" class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    Father Identification
+                                    Birth Date
                                 </th>
                                 <th scope="col" class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    Children
+                                    Village
                                 </th>
 
-                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                Phone number
-                                </th>
-                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Village</th>
+
                                 <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Created at</th>
                                 <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Action</th>
 
@@ -91,44 +97,32 @@
                             <tr>
                                 <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
                                     <div>
-                                        <h2 class="font-medium text-gray-800 dark:text-white ">{{contact.father_full_name}}</h2>
+                                        <h2 class="font-medium text-gray-800 dark:text-white ">{{contact.full_name}}</h2>
                                 </td>
                               
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                     <div>
-                                        <h4 class="text-gray-700 dark:text-gray-200">{{contact.father_id_no}}</h4>
+                                        <h4 class="text-gray-700 dark:text-gray-200">{{contact.description|slice:150}}</h4>
                                     </div>
                                 </td>
 
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                     <div>
-                                        <h4 class="text-gray-700 dark:text-gray-200">{{contact.mother_full_name}}</h4>
+                                        <h4 class="text-gray-700 dark:text-gray-200">{{contact.phone}}</h4>
                                     </div>
                                 </td>
 
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                     <div>
-                                        <h4 class="text-gray-700 dark:text-gray-200">{{contact.mother_id_no}}</h4>
+                                        <h4 class="text-gray-700 dark:text-gray-200">{{contact.birth_date}}</h4>
                                     </div>
                                 </td>
                                 <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
                                     <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
-                                      {{contact.number_child}}
+                                      {{contact.village}}
                                     </div>
                                 </td>
-                                <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
-                                    <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
-                                      {{contact.phone_number}}
-                                    </div>
-                                </td>
-                               
-                               
-                              
-                                <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <div class="flex items-center">
-                                       {{contact.village}}
-                                    </div>
-                                </td>
+                            
 
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                     {{contact.created_on}}
@@ -140,7 +134,7 @@
                                       <a href="{% url 'birth_child'%}?family={{contact.id}} ">Add Child</a>
                                     </div>
                                     <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
-                                        Edit Location
+                                        Edit
                                     </div>
                                    </div>
                                 </td>
@@ -195,19 +189,19 @@
     <div class="mx-auto w-full max-w-[550px]">
       <form method="POST">
         {% csrf_token%}
-        <h4 class="mb-3 block text-[#07074D] font-bold underline text-xl text-center">Add Family form</h3>
+        <h4 class="mb-3 block text-[#07074D] font-bold underline text-xl text-center">Add Pregnancy form</h3>
         <div class="mb-5">
           <label
             for="name"
             class="mb-3 block text-base font-medium text-[#07074D]"
           >
-           Father Full Name
+           Full Name
           </label>
           <input
             type="text"
-            name="father_full_name"
+            name="full_name"
             id="name"
-            placeholder="Kamali"
+            placeholder="Kamali Florb"
             class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"
            required
             />
@@ -217,13 +211,13 @@
               for="name"
               class="mb-3 block text-base font-medium text-[#07074D]"
             >
-             Father Identification
+            Phone Number
             </label>
             <input
-              type="number"
-              name="father_id_no"
+              type="text"
+              name="phone"
               id="name"
-              placeholder="11990..."
+              placeholder="07..."
               required
               class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
           </div>
@@ -233,65 +227,20 @@
               for="name"
               class="mb-3 block text-base font-medium text-[#07074D]"
             >
-             Mother Full Name
+             Birth Date
             </label>
             <input
-              type="text"
-              name="mother_full_name"
+              type="date"
+              name="birth_date"
               id="name"
               placeholder="Kamikazi"
               required
               class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
           </div>
-          <div class="mb-5">
-              <label
-                for="name"
-                class="mb-3 block text-base font-medium text-[#07074D]"
-              >
-               Mother Identification
-              </label>
-              <input
-                type="number"
-                name="mother_id_no"
-                id="name"
-                placeholder="11990..."
-                required
-                class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"              />
-            </div>
-            <div class="mb-5">
-                <label
-                  for="name"
-                  class="mb-3 block text-base font-medium text-[#07074D]"
-                >
-                 Number of children
-                </label>
-                <input
-                  type="number"
-                  name="number_child"
-                  id="name"
-                  placeholder="2 or more"
-                  required
-                  class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"
-                />
-              </div>
+       
+      
 
-
-              <div class="mb-5">
-                <label
-                  for="name"
-                  class="mb-3 block text-base font-medium text-[#07074D]"
-                >
-                 Family Phone Number
-                </label>
-                <input
-                  type="text"
-                  name="phone_number"
-                  id="name"
-                  placeholder="0784444"
-                  required
-                  class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"
-                />
-              </div>
+    
               <div class="max-w-2xl mx-auto my-4">
 
                 <label for="countries" class="mb-3 block text-base font-medium text-[#07074D]">Select an option</label>
@@ -304,8 +253,20 @@
            
                 </select>
             
-              
-                </p>
+                <div class="mb-5">
+                    <label
+                      for="name"
+                      class="mb-3 block text-base font-medium text-[#07074D]"
+                    >
+                     Short Description
+                    </label>
+                    <textarea
+                      name="description"
+                     rows="8"
+                      class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"
+                    ></textarea>
+                  </div>
+            
                 <script src="https://unpkg.com/flowbite@1.4.0/dist/flowbite.js"></script>
             </div>
         <div>

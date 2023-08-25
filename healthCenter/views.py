@@ -12,8 +12,8 @@ from healthCenter.forms import LoginForm
 from accounts.decoration import is_health_center
 from home.models import Patient,Contraception,Malnutrition,HouseHold
 from accounts.models import Village
-from healthCenter.forms import HouseHoldForm
-
+from healthCenter.forms import HouseHoldForm,BirthChildForm,PregnancyForm
+from healthCenter.models import *
 
 # Create your views here.
 
@@ -166,3 +166,77 @@ def house_hold(request):
             req.save()
         context['form']=form
     return render(request,'healtfeature/houseHold.html',context)
+
+@is_health_center
+def birth_child(request):
+    memebrs=request.user.clinic_members
+    all_mal=BirthChild.objects.filter(clinic=request.user)
+    paginator=Paginator(all_mal, 2)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    village=Village.objects.all()
+    form=BirthChildForm()
+
+    context={
+        "all_mal":page_obj,
+        "page_number":page_number,
+        "count":paginator.num_pages,
+        "c_record":all_mal.count(),
+        'village':village,
+        'form':form
+    }
+    
+    if request.method=='POST' and request.GET.get('family'):
+        try:
+            family=HouseHold.objects.get(id=request.GET.get('family'))
+            form=BirthChildForm(request.POST)
+            if form.is_valid():
+                req=form.save(commit=False)
+                req.clinic=request.user
+                req.family=family
+                req.save()
+                messages.success(request, 'Added successful ')
+                context['form']=form
+        except:
+            pass
+        return render(request,'healtfeature/birthChild.html',context)
+
+    elif request.GET.get('family') and request.method =='GET':
+        return render(request,'healtfeature/birthChild.html',context)
+    elif request.method=='POST':
+        start=request.POST.get('from')
+        to=request.POST.get('to')
+        all_mal=BirthChild.objects.filter(clinic=request.user,created_on__range=[start,to])
+        pdf=render_to_pdf('pdfs/birth.html',{'count':all_mal.count(),'all_mal':all_mal,'today':date.today(),'start':start,'to':to})
+        return HttpResponse(pdf,content_type='application/pdf')
+        
+    return render(request,'healtfeature/birthChildren.html',context)
+    
+    
+@is_health_center
+def pregnancy_woman(request):
+    memebrs=request.user.clinic_members
+    all_mal=Pregnancy.objects.filter()
+    paginator=Paginator(all_mal, 2)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    village=Village.objects.all()
+    form=PregnancyForm()
+
+    context={
+        "all_mal":page_obj,
+        "page_number":page_number,
+        "count":paginator.num_pages,
+        "c_record":all_mal.count(),
+        'village':village,
+        'form':form
+        
+    }
+    if request.method=='POST':
+        form=PregnancyForm(request.POST)
+        if form.is_valid():
+            req=form.save(commit=False)
+            req.worker=request.user
+            req.save()
+        context['form']=form
+    return render(request,'healtfeature/pregnancy.html',context)
