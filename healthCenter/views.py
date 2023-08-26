@@ -5,6 +5,7 @@ from django.contrib.auth.models import auth
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 from utils.pdf_generator import render_to_pdf
@@ -141,9 +142,8 @@ def patient(request):
 
 @is_health_center
 def house_hold(request):
-    memebrs=request.user.clinic_members
-    all_mal=HouseHold.objects.filter(worker__in=memebrs)
-    paginator=Paginator(all_mal, 2)
+    all_mal=HouseHold.objects.filter()
+    paginator=Paginator(all_mal, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     village=Village.objects.all()
@@ -164,5 +164,10 @@ def house_hold(request):
             req=form.save(commit=False)
             req.worker=request.user
             req.save()
+            messages.success(request, 'added successful ')
         context['form']=form
+    elif request.GET.get("search"):
+        name=request.GET.get("search")
+        all_mal=HouseHold.objects.filter(Q(father_full_name__icontains=name)|Q(mother_full_name__icontains=name)|Q(phone_number__icontains=name))
+        context['all_mal']=all_mal
     return render(request,'healtfeature/houseHold.html',context)
