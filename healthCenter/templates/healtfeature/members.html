@@ -1,5 +1,13 @@
 {% extends 'base/healthCenter/base.html'%}
 
+{% block css%}
+<!-- UIkit CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/css/uikit.min.css" />
+<!-- UIkit JS -->
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/js/uikit-icons.min.js"></script>
+{%endblock%}
+
 {% block main%}
 <!-- component -->
 <section class="container px-4 mx-auto mt-10">
@@ -15,20 +23,50 @@
         </div>
     </div>
 
+    {%if form.errors%}
+    <div class="uk-alert-danger" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p>{{form.errors}}.</p>
+    </div>
+    {%endif%}
+
+    {% if messages %}
+    <div class="uk-alert-success" uk-alert>
+      {% for message in messages %}
+      <a class="uk-alert-close" uk-close></a>
+      <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+    {% endif%}
+
     <div class="mt-6 md:flex md:items-center md:justify-between">
         <div class="inline-flex overflow-hidden  divide-x rounded-lg  rtl:flex-row-reverse ">
-                 
+        <a href="" class="AppBgColor px-2 py-2 text-white font-semibold hover:text-white hover:no-underline">
+            <button uk-toggle="target: #my-id" type="button" class="flex gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-plus-circle " viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                  </svg>
+                Add Member</button>
+            </a>
         </div>
 
-        <div class="relative flex items-center mt-4 md:mt-0">
-            <span class="absolute">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mx-3 text-gray-400 dark:text-gray-600">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-            </span>
-
-            <input type="text" placeholder="Search" class="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+        <form method="GET">
+            <div class="relative flex items-center mt-4 md:mt-0">
+                <span class="absolute">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mx-3 text-gray-400 dark:text-gray-600">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </span>
+    
+                <input name="search" type="text" placeholder="Search" class="block w-full py-2 pr-5 text-gray-700 bg-white border border-gray-200 rounded-l-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+            <button class=" block w-full text-center text-white AppBgColor px-2 py-2 font-semibold rounded-r-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                  </svg>
+            </button>
         </div>
+    </form>
     </div>
 
     <div class="flex flex-col mt-6">
@@ -144,4 +182,109 @@
         </div>
     </div>
 </section>
+
+
+<div id="my-id" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+       
+
+<div class="flex items-center justify-center p-4">
+  
+  
+    <div class="mx-auto w-full max-w-[550px]">
+      <form method="POST">
+        {% csrf_token%}
+        <h4 class="mb-3 block text-[#07074D] font-bold underline text-xl text-center">Add Family form</h3>
+        <div class="mb-5">
+          <label
+            for="name"
+            class="mb-3 block text-base font-medium text-[#07074D]"
+          >
+        Full Name
+          </label>
+          <input
+            type="text"
+            name="full_name"
+            id="name"
+            placeholder="Kamali"
+            class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"
+           required
+            />
+        </div>
+        <div class="mb-5">
+            <label
+              for="name"
+              class="mb-3 block text-base font-medium text-[#07074D]"
+            >
+            email
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="name"
+              placeholder="johnny@gmail.com"
+              required
+              class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
+          </div>
+
+          <div class="mb-5">
+            <label
+              for="name"
+              class="mb-3 block text-base font-medium text-[#07074D]"
+            >
+            Phone number
+            </label>
+            <input
+              type="text"
+              name="phone_number"
+              id="name"
+              placeholder="07..."
+              required
+              class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
+          </div>
+          <div class="mb-5">
+              <label
+                for="name"
+                class="mb-3 block text-base font-medium text-[#07074D]"
+              >
+              Identification number
+              </label>
+              <input
+                type="number"
+                name="identification_number"
+                id="name"
+                placeholder="11990..."
+                required
+                class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"              />
+            </div>
+          
+
+              <div class="max-w-2xl mx-auto my-4">
+
+                <label for="countries" class="mb-3 block text-base font-medium text-[#07074D]">Select an option</label>
+                    <select
+                    name="village"
+                    id="countries" class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md">
+                    {%for dt in villages%}
+                    <option value="{{dt.id}}">{{dt.name}}</option>
+                    {%endfor%}
+           
+                </select>
+            
+              
+                </p>
+                <script src="https://unpkg.com/flowbite@1.4.0/dist/flowbite.js"></script>
+            </div>
+        <div>
+          <button
+            class="mb-1.5 block w-full text-center text-white AppBgColor px-2 py-2 font-semibold rounded-md"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+    </div>
+</div>
 {% endblock%}

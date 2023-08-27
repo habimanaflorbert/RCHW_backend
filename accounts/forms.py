@@ -1,8 +1,24 @@
+import random
+import string
 from django import forms
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
+from django.conf import settings
+from django.core.mail import send_mail
 from accounts.models import User
+
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_lowercase+string.digits
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
+
+def send_mail_task(message,subj,email):
+    subject=subj
+    message=message
+    from_email=settings.EMAIL_HOST_USER
+    send_mail(subject,message,from_email,[str(email),],fail_silently=True)
 
 
 class UserAdminCreationForm(forms.ModelForm):
@@ -51,3 +67,8 @@ class UserAdminChangeForm(forms.ModelForm):
         # This is done here, rather than on the field, because the
         # field does not have access to the initial value
         return self.initial["password"]
+
+class UmujyanamaForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('full_name','email','phone_number','identification_number')

@@ -1,0 +1,126 @@
+{% extends 'base/healthCenter/base.html'%}
+{% block css%}
+<!-- UIkit CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/css/uikit.min.css" />
+<!-- UIkit JS -->
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/js/uikit-icons.min.js"></script>
+{%endblock%}
+{% block main%}
+
+<section class="container px-4 mx-auto mt-10">
+
+<div class="flex items-center justify-center p-4">
+  
+  
+    <div class="mx-auto w-full max-w-[550px]">
+        {%if form.errors%}
+        <div class="uk-alert-danger" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p>{{form.errors}}</p>
+        </div>
+        {%endif%}
+        
+        {% if messages %}
+        <div class="uk-alert-success" uk-alert>
+          {% for message in messages %}
+          <a class="uk-alert-close" uk-close></a>
+          <p class="added">{{ message }}</p>
+          {% endfor %}
+        </div>
+        {% endif%}
+
+      <form method="POST">
+        {% csrf_token%}
+        <h4 class="mb-3 block text-[#07074D] font-bold underline text-xl text-center">Add Family form</h3>
+        <div class="mb-5">
+          <label
+            for="name"
+            class="mb-3 block text-base font-medium text-[#07074D]"
+          >
+           Full Name
+          </label>
+          <input
+            type="text"
+            name="full_name"
+            id="name"
+            placeholder="Kamali"
+            value="{{inst.full_name}}"
+            class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"
+           required
+            />
+        </div>
+        <div class="mb-5">
+            <label
+              for="name"
+              class="mb-3 block text-base font-medium text-[#07074D]"
+            >
+             Date of birth
+            </label>
+            <input
+              type="date"
+              name="birth_date"
+              id="birth_date"
+              value="{{inst.birth_date|date:"Y-m-d"}}"
+              required
+              class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
+          </div>
+             
+          <div class="max-w-2xl mx-auto my-4">
+
+            <label for="countries" class="mb-3 block text-base font-medium text-[#07074D]">Select a Village</label>
+                <select
+                name="village"
+                id="countries" class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md">
+                {%for dt in form.village%}
+                {{dt}}
+                {%endfor%}
+       
+            </select>
+        
+         
+        </div>
+            <div class="mb-5">
+                <label
+                  for="name"
+                  class="mb-3 block text-base font-medium text-[#07074D]"
+                >
+                 Short Description
+                </label>
+                <textarea
+                  name="description"
+                 rows="8"
+                  class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"
+                >{{inst.description}}</textarea>
+              </div>
+        <div>
+           
+        </div>
+        <div class="flex flex-wrap">
+            <div class="w-1/2">   <button
+                class="uk-button  text-center text-white AppBgColor rounded-md"
+              >
+                Submit
+              </button></div>
+              <div class="w-1/2">
+                <button class="uk-button bg-red-700 text-white hover:bg-red-500 rounded-md" type="button" uk-toggle="target: #modal-example">Delete</button>
+            </div>
+           </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div id="modal-example" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title">Warning</h2>
+        <p>Are you shure  u want to delete this <span class="text-green-500">{{inst.full_name}}</span> ?</p>
+        <p class="uk-text-right">
+            <button class="uk-button bg-blue-700 hover:bg-blue-500 text-white rounded-md uk-modal-close" type="button">No</button>
+            <a href="{% url 'delete_birth' inst.id %}" class="uk-button bg-red-700 hover:bg-red-500 text-white rounded-md" type="button">Yes</a>
+        </p>
+    </div>
+</div>
+</section>
+
+{%endblock%}

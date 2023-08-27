@@ -74,3 +74,4 @@ def villages(request):
     villages=Village.objects.all()
     serializer=VillageSerializer(villages,many=True)
     return Response(serializer.data)
+

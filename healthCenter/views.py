@@ -11,10 +11,11 @@ from django.db.models import Q
 from utils.pdf_generator import render_to_pdf
 from healthCenter.forms import LoginForm
 from accounts.decoration import is_health_center
-from home.models import Patient,Contraception,Malnutrition,HouseHold
-from accounts.models import Village
-from healthCenter.forms import HouseHoldForm
-
+from home.models import *
+from accounts.models import Village,UserAddress
+from healthCenter.forms import HouseHoldForm,BirthChildForm,PregnancyForm
+from healthCenter.models import *
+from accounts.forms import *
 
 # Create your views here.
 
@@ -79,6 +80,10 @@ def malnutrition(request):
         all_mal=Malnutrition.objects.filter(worker__in=memebrs,has_malnutrition=True,created_on__range=[start,to])
         pdf=render_to_pdf('pdfs/malnutrition.html',{'count':all_mal.count(),'all_mal':all_mal,'today':date.today(),'start':start,'to':to})
         return HttpResponse(pdf,content_type='application/pdf')
+    elif request.GET.get("search"):
+        name=request.GET.get("search")
+        all_mal=Malnutrition.objects.filter(Q(child_full_name__icontains=name)|Q(family__father_full_name__icontains=name)|Q(family__mother_full_name__icontains=name))
+        context['all_mal']=all_mal
     return render(request,'healtfeature/malnutrition.html',context)
 
 @is_health_center
@@ -101,6 +106,10 @@ def contraception(request):
         all_mal=Contraception.objects.filter(worker__in=memebrs,created_on__range=[start,to])
         pdf=render_to_pdf('pdfs/contraception.html',{'count':all_mal.count(),'all_mal':all_mal,'today':date.today(),'start':start,'to':to})
         return HttpResponse(pdf,content_type='application/pdf')
+    elif request.GET.get("search"):
+        name=request.GET.get("search")
+        all_mal=Contraception.objects.filter(Q(family__father_full_name__icontains=name)|Q(family__mother_full_name__icontains=name))
+        context['all_mal']=all_mal
     return render(request,'healtfeature/contraception.html',context)
 
 @is_health_center
@@ -109,13 +118,38 @@ def members(request):
     paginator=Paginator(memebrs, 2)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
+    form=UmujyanamaForm()
+    villages=Village.objects.filter(sector=request.user.clinic_address.sector)
 
     context={
         "all_mal":page_obj,
         "page_number":page_number,
         "count":paginator.num_pages,
-        "c_record":memebrs.count()
+        "c_record":memebrs.count(),
+        "form":form,
+        "villages":villages
     }
+    if request.GET.get("search"):
+        name=request.GET.get("search")
+        all_mal=memebrs.objects.filter(Q(full_name__icontains=name)|Q(phone_number__icontains=name))
+        context['all_mal']=all_mal
+
+    elif request.method=='POST':
+        form=UmujyanamaForm(request.POST)
+        if form.is_valid():
+            req=form.save(commit=False)
+            new_pass=get_random_string(8)
+            req.password=new_pass
+            req.username=request.POST['phone_number']
+            req.save()
+            request.user.clinic.members.add(req)
+            village=Village.objects.get(id=request.POST['village'])
+            UserAddress.objects.create(user=req,village=village)
+            message=f"Hello dear {req.full_name} !\nYou have granted permission as Umujyanama wubuzima on mobile app as worker of{request.user.full_name} here's crendetials:\n username:{req.username} \n password:{new_pass} \n please change password after login to the system \n Thank you for using RCHW.  "
+            subj="You have granted to be umujyanama wubuzima"
+            send_mail_task(message,subj,req.email)
+            messages.success(request, 'added successful ')
+        context['form']=form
     return render(request,'healtfeature/members.html',context)
 
 @is_health_center
@@ -125,6 +159,7 @@ def patient(request):
     paginator=Paginator(all_mal, 2)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
+    
 
     context={
         "all_mal":page_obj,
@@ -171,3 +206,142 @@ def house_hold(request):
         all_mal=HouseHold.objects.filter(Q(father_full_name__icontains=name)|Q(mother_full_name__icontains=name)|Q(phone_number__icontains=name))
         context['all_mal']=all_mal
     return render(request,'healtfeature/houseHold.html',context)
+
+@is_health_center
+def birth_child(request):
+    all_mal=BirthChild.objects.filter(clinic=request.user)
+    paginator=Paginator(all_mal, 2)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    village=Village.objects.all()
+    form=BirthChildForm()
+
+    context={
+        "all_mal":page_obj,
+        "page_number":page_number,
+        "count":paginator.num_pages,
+        "c_record":all_mal.count(),
+        'village':village,
+        'form':form
+    }
+    
+    if request.method=='POST' and request.GET.get('family'):
+        try:
+            family=HouseHold.objects.get(id=request.GET.get('family'))
+            form=BirthChildForm(request.POST)
+            if form.is_valid():
+                req=form.save(commit=False)
+                req.clinic=request.user
+                req.family=family
+                req.save()
+                messages.success(request, 'Added successful ')
+                context['form']=form
+        except:
+            pass
+        return render(request,'healtfeature/birthChild.html',context)
+
+    elif request.GET.get('family') and request.method =='GET':
+        return render(request,'healtfeature/birthChild.html',context)
+    elif request.method=='POST':
+        start=request.POST.get('from')
+        to=request.POST.get('to')
+        all_mal=BirthChild.objects.filter(clinic=request.user,created_on__range=[start,to])
+        pdf=render_to_pdf('pdfs/birth.html',{'count':all_mal.count(),'all_mal':all_mal,'today':date.today(),'start':start,'to':to})
+        return HttpResponse(pdf,content_type='application/pdf')
+    
+    elif request.GET.get("search"):
+        name=request.GET.get("search")
+        all_mal=BirthChild.objects.filter(Q(full_name__icontains=name)|Q(family__father_full_name__icontains=name)|Q(family__mother_full_name__icontains=name))
+        context['all_mal']=all_mal
+    return render(request,'healtfeature/birthChildren.html',context)
+    
+    
+@is_health_center
+def pregnancy_woman(request):
+    all_mal=Pregnancy.objects.filter()
+    paginator=Paginator(all_mal, 2)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    village=Village.objects.all()
+    form=PregnancyForm()
+
+    context={
+        "all_mal":page_obj,
+        "page_number":page_number,
+        "count":paginator.num_pages,
+        "c_record":all_mal.count(),
+        'village':village,
+        'form':form
+        
+    }
+    if request.method=='POST':
+        form=PregnancyForm(request.POST)
+        if form.is_valid():
+            req=form.save(commit=False)
+            req.clinic=request.user
+            req.save()
+            messages.success(request, 'Added successful ')
+        context['all_mal']=Pregnancy.objects.filter()
+        context['form']=form
+    elif request.GET.get("search"):
+        name=request.GET.get("search")
+        all_mal=Pregnancy.objects.filter(Q(full_name__icontains=name)|Q(phone__icontains=name))
+        context['all_mal']=all_mal
+    return render(request,'healtfeature/pregnancy.html',context)
+
+def edit_pregnancy(request,pk):
+    try:
+        all_mal=Pregnancy.objects.get(id=pk)
+        form=PregnancyForm(instance=all_mal)
+        context={
+        "inst":all_mal,
+        'form':form
+         }
+        if request.method=='POST':
+            form=PregnancyForm(request.POST,instance=all_mal)
+            if form.is_valid():
+                form.save(commit=True)
+                messages.success(request, 'Updated successful')
+    except Pregnancy.DoesNotExist:
+        pass
+    return render(request,'healtfeature/editPregnancy.html',context)
+
+def delete_pregnancy(request,pk):
+    try:
+        all_mal=Pregnancy.objects.get(id=pk)
+        all_mal.delete()
+        messages.success(request, 'delete successful')
+    except Pregnancy.DoesNotExist:
+        pass
+    return redirect('pregnancy_woman')
+
+
+def edit_birth(request,pk):
+    try:
+        all_mal=BirthChild.objects.get(id=pk)
+        form=BirthChildForm(instance=all_mal)
+        context={
+        "inst":all_mal,
+        'form':form
+         }
+        if request.method=='POST':
+            form=BirthChildForm(request.POST,instance=all_mal)
+            if form.is_valid():
+                form.save(commit=True)
+                messages.success(request, 'Updated successful')
+    except Pregnancy.DoesNotExist:
+        pass
+    return render(request,'healtfeature/editBirth.html',context)
+
+
+def delete_birth(request,pk):
+    try:
+        all_mal=BirthChild.objects.get(id=pk)
+        all_mal.delete()
+        messages.success(request, 'delete successful')
+    except BirthChild.DoesNotExist:
+        pass
+    return redirect('birth_child')
+
+def settings(request):
+    return render(request,'auth/settings.html')

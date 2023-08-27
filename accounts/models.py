@@ -248,12 +248,12 @@ class ClinicWorker(models.Model):
 
 class ClinicAddress(models.Model):
     clinic=models.OneToOneField(User,related_name='clinic_address',on_delete=models.CASCADE)
-    district=models.ForeignKey(District,on_delete=models.CASCADE,related_name='clinic_district')
+    sector=models.ForeignKey(Sector,on_delete=models.CASCADE,related_name='clinic_sector')
 
     class Meta:
         verbose_name = _("Clinic address")
         verbose_name_plural = _("Clinics address")
-        ordering = ('district',)
+        ordering = ('sector',)
 
 
     def get_absolute_url(self):

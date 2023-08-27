@@ -118,7 +118,7 @@ class UserAddressAdmin(admin.ModelAdmin):
 
 @admin.register(ClinicAddress)
 class UserAddressAdmin(admin.ModelAdmin):
-    list_display = ('clinic', 'district')
+    list_display = ('clinic', 'sector')
     list_display_links = ['clinic']
     search_fields = ['clinic']
 
