@@ -9,7 +9,7 @@ from django.db.models import Q
 
 
 from utils.pdf_generator import render_to_pdf
-from healthCenter.forms import LoginForm
+from healthCenter.forms import LoginForm, UserChangePassword, UserInfoPassword
 from accounts.decoration import is_health_center
 from home.models import *
 from accounts.models import Village,UserAddress
@@ -115,7 +115,7 @@ def contraception(request):
 @is_health_center
 def members(request):
     memebrs=request.user.clinic_members
-    paginator=Paginator(memebrs, 2)
+    paginator=Paginator(memebrs, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     form=UmujyanamaForm()
@@ -145,7 +145,7 @@ def members(request):
             request.user.clinic.members.add(req)
             village=Village.objects.get(id=request.POST['village'])
             UserAddress.objects.create(user=req,village=village)
-            message=f"Hello dear {req.full_name} !\nYou have granted permission as Umujyanama wubuzima on mobile app as worker of{request.user.full_name} here's crendetials:\n username:{req.username} \n password:{new_pass} \n please change password after login to the system \n Thank you for using RCHW.  "
+            message=f"Hello dear {req.full_name} !\nYou have granted permission as Umujyanama wubuzima on mobile app as worker of {request.user.full_name} here's crendetials:\n username:{req.username} \n password:{new_pass} \nPlease change password after login to the system \nThank you for using RCHW.  "
             subj="You have granted to be umujyanama wubuzima"
             send_mail_task(message,subj,req.email)
             messages.success(request, 'added successful ')
@@ -160,7 +160,6 @@ def patient(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     
-
     context={
         "all_mal":page_obj,
         "page_number":page_number,
@@ -173,6 +172,10 @@ def patient(request):
         all_mal=Patient.objects.filter(worker__in=memebrs,created_on__range=[start,to])
         pdf=render_to_pdf('pdfs/patient.html',{'count':all_mal.count(),'all_mal':all_mal,'today':date.today(),'start':start,'to':to})
         return HttpResponse(pdf,content_type='application/pdf')
+    elif request.GET.get("search"):
+        name=request.GET.get("search")
+        all_mal=Patient.objects.filter(Q(full_name__icontains=name)|Q(phone__icontains=name))
+        context['all_mal']=all_mal
     return render(request,'healtfeature/patients.html',context)
 
 @is_health_center
@@ -224,7 +227,6 @@ def birth_child(request):
         'village':village,
         'form':form
     }
-    
     if request.method=='POST' and request.GET.get('family'):
         try:
             family=HouseHold.objects.get(id=request.GET.get('family'))
@@ -343,5 +345,55 @@ def delete_birth(request,pk):
         pass
     return redirect('birth_child')
 
-def settings(request):
-    return render(request,'auth/settings.html')
+def settings_user(request):
+    info_form=UserInfoPassword()
+    context={
+        "info_form":info_form
+    }
+    if request.method=='POST':
+        info_form = UserInfoPassword(request.POST, instance=request.user)
+        if info_form.is_valid():
+            info_form.save()
+            messages.success(request, 'Successful')
+        context['info_form']=info_form
+    return render(request,'auth/settings.html',context)
+
+def change_pass(request):
+    form_pass = UserChangePassword()
+    context={
+        "form_pass":form_pass
+    }
+    if request.method == 'POST':
+        form_pass = UserChangePassword(request.POST, instance=request.user)
+
+        if form_pass.is_valid():
+            form_pass.save()
+            auth.logout(request)
+            return redirect('login')
+        context['form_pass']=form_pass
+    return render(request,'auth/settings.html',context)
+    
+def disactive_user(request,pk):
+    try:
+        user=User.objects.get(id=pk)
+        user.is_active=False
+        user.save()
+        messages.success(request, 'Successful')
+    except User.DoesNotExist:
+        pass
+    return redirect('members')
+
+def active_user(request,pk):
+    try:
+        user=User.objects.get(id=pk)
+        user.is_active=True
+        user.save()
+        messages.success(request, 'Successful')
+    except User.DoesNotExist:
+        pass
+    return redirect('members')
+
+
+def user_logout(request):
+    auth.logout(request)
+    return redirect('login')

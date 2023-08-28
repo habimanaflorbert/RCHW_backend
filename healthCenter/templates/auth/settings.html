@@ -16,10 +16,16 @@
   
   
     <div class="mx-auto w-full max-w-[550px]">
-        {%if form.errors%}
+        {%if form_pass.errors%}
         <div class="uk-alert-danger" uk-alert>
             <a class="uk-alert-close" uk-close></a>
-            <p>{{form.errors}}</p>
+            <p>{{form_pass.errors}}</p>
+        </div>
+        {%endif%}
+        {%if info_form.errors%}
+        <div class="uk-alert-danger" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p>{{info_form.errors}}</p>
         </div>
         {%endif%}
         
@@ -32,26 +38,25 @@
         </div>
         {% endif%}
 
-        <form method="POST">
+        <form action="{% url 'settings_user'%}" method="POST">
             {% csrf_token%}
-            <h4 class="mb-3 block text-[#07074D] font-bold underline text-xl text-center">Add Pregnancy form</h3>
-            <div class="mb-5">
-              <label
-                for="name"
-                class="mb-3 block text-base font-medium text-[#07074D]"
-              >
-               Full Name
-              </label>
-              <input
-                type="text"
-                name="full_name"
-                id="name"
-                placeholder="Kamali Florb"
-                value={{inst.full_name}}
-                class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"
-               required
-                />
-            </div>
+            <h4 class="mb-3 block text-[#07074D] font-bold underline text-xl text-center">Update Account information</h3>
+              <div class="mb-5">
+                <label
+                  for="name"
+                  class="mb-3 block text-base font-medium text-[#07074D]"
+                >
+                Full name
+                </label>
+                <input
+                  type="text"
+                  name="full_name"
+                  id="name"
+                  placeholder="07..."
+                  value="{{request.user.full_name}}"
+                  required
+                  class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
+              </div>
             <div class="mb-5">
                 <label
                   for="name"
@@ -61,63 +66,13 @@
                 </label>
                 <input
                   type="text"
-                  name="phone"
+                  name="phone_number"
                   id="name"
                   placeholder="07..."
-                  value={{inst.phone}}
+                  value={{request.user.phone_number}}
                   required
                   class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
               </div>
-    
-              <div class="mb-5">
-                <label
-                  for="name"
-                  class="mb-3 block text-base font-medium text-[#07074D]"
-                >
-                 Birth Date
-                </label>
-                <input
-                  type="date"
-                  name="birth_date"
-                  id="name"
-                  placeholder="Kamikazi"
-                  required
-                  value="{{inst.birth_date|date:"Y-m-d" }}"
-               
-                  class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
-              </div>
-           
-          
-    
-        
-                  <div class="max-w-2xl mx-auto my-4">
-    
-                    <label for="countries" class="mb-3 block text-base font-medium text-[#07074D]">Select an option</label>
-                        <select
-                        name="village"
-                        id="countries" class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md">
-                        {%for dt in form.village%}
-                        {{dt}}
-                        {%endfor%}
-               
-                    </select>
-                
-                    <div class="mb-5">
-                        <label
-                          for="name"
-                          class="mb-3 block text-base font-medium text-[#07074D]"
-                        >
-                         Short Description
-                        </label>
-                        <textarea
-                          name="description"
-                         rows="8"
-                          class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"
-                        >{{inst.description}}</textarea>
-                      </div>
-                
-                    <script src="https://unpkg.com/flowbite@1.4.0/dist/flowbite.js"></script>
-                </div>
             <div>
            <div class="flex flex-wrap">
             <div class="w-1/2">   <button
@@ -125,26 +80,86 @@
               >
                 Submit
               </button></div>
-              <div class="w-1/2">
-                <button class="uk-button bg-red-700 text-white hover:bg-red-500 rounded-md" type="button" uk-toggle="target: #modal-example">Delete</button>
-            </div>
+              <div class="w-1/2"> 
+                <button
+                class="uk-button  text-center text-white bg-blue-700 hover:bg-blue-500 rounded-md"
+                type="button" uk-toggle="target: #modal-example" >
+                Change Password
+              </button>
+
+              </div>
+           
            </div>
             </div>
           </form>
     </div>
-  </div>
-
-  <div id="modal-example" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body">
-        <h2 class="uk-modal-title">Warning</h2>
-        <p>Are you shure  u want to delete this <span class="text-green-500">{{inst.full_name}}</span> ?</p>
-        <p class="uk-text-right">
-            <button class="uk-button bg-blue-700 hover:bg-blue-500 text-white rounded-md uk-modal-close" type="button">No</button>
-            <a href="{% url 'delete_pregnancy' inst.id %}" class="uk-button bg-red-700 hover:bg-red-500 text-white rounded-md" type="button">Yes</a>
-        </p>
-    </div>
-</div>
-  
+  </div>  
 </section>
-
+<div id="modal-example" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body">
+      <h2 class="uk-modal-title my-10">Changing Password form</h2>
+      <form action="{% url 'change_pass'%}" method="POST">
+        {% csrf_token%}
+          <div class="mb-5">
+            <label
+              for="name"
+              class="mb-3 block text-base font-medium text-[#07074D]"
+            >
+            Recent Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="name"
+              placeholder="*************"
+              required
+              class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
+          </div>
+        <div class="mb-5">
+            <label
+              for="name"
+              class="mb-3 block text-base font-medium text-[#07074D]"
+            >
+            New Passowrd
+            </label>
+            <input
+              type="password"
+              name="new_password"
+              id="name"
+              placeholder="*************"
+           
+              required
+              class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
+          </div>
+        <div>
+          <div class="mb-5">
+            <label
+              for="name"
+              class="mb-3 block text-base font-medium text-[#07074D]"
+            >
+            Re-New Passowrd
+            </label>
+            <input
+              type="password"
+              name="re_password"
+              id="name"
+              placeholder="*************"
+              required
+              class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
+          </div>
+        <div>
+       <div class="flex flex-wrap">
+        <div class="w-full">   <button 
+            class="uk-button  text-center text-white AppBgColor rounded-md"
+          >
+            Submit
+          </button></div>
+        
+       
+       </div>
+        </div>
+      </form>
+  </div>
+</div>
+</div>
 {%endblock%}

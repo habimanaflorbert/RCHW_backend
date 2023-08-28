@@ -3,7 +3,7 @@ from accounts.forms import UserAdminCreationForm, UserAdminChangeForm
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 # from django.contrib.auth import get_user_model
 from accounts.models import ClinicAddress,User,UserAddress,Province,District,Sector,Village,ClinicWorker
-
+from accounts.forms import send_mail_task,get_random_string
 
 class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
     # The forms to add and change user instances
@@ -67,10 +67,10 @@ class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
             "full_name",
             "username",
             "user_type",
-            "identification_number",
             "phone_number",
             "password1",
             "password2"
+          
         )}),
     )
     search_fields = (
@@ -86,8 +86,18 @@ class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
         "disable_users",
         "enable_users",
     ]
+    
+    
     def save_model(self, request, obj, form, change):
+        if change:
+            pass
+        else:
+            message=f"Hello {form.data['full_name'] }! \n You have granted permission web app of RCHW as health center of {request.user.full_name} here's crendetials:\n username:{form.data['username']} \n password:{form.data['password1']} \nPlease change password after login to the system \nThank you for using RCHW.  "
+            subj="You have granted to be permission"
+            send_mail_task(message,subj,form.data['email'])
+            # send_mail_task(obj.id,form.data['password1'])
         return super().save_model(request, obj, form, change)
+
 
     def disable_users(self, request, queryset):
         queryset.update(is_active=False)

@@ -1,69 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-    <head>
-      {% load static %}
-      <link href="{% static 'City Plus.png' %}" rel="shortcut icon"/>
-
-        <title>Birth children</title>
-
-        <style type="text/css">
-          body{
-            padding-top: 10px;
-            padding:5px;
-          }
-
-            .header {
-                font-size: 15px;
-                font-weight: 100;
-                text-align: center;
-                color:black;
-                
-            }
-            .title {
-                font-size: 22px;
-                font-weight: 100;
-               /* text-align: right;*/
-               padding: 10px 20px 0px 20px;  
-            }
-            .title span {
-                color: #007cae;
-            }
-           
-            
-            .date{
-              text-align: right;
-            }
-           .daked{
-           background-color: #000;
-           color:white;
-           padding-top: 2px;
-           width: 100%;
-
-            }
-            
-            @page{
-              size: letter landscape;
-              padding: 2cm;
-     
-            }
-         
-        </style>
-    </head>
-    <body>
-        
-          <div class="date">
-            {{today}}
-          </div>
-            <div class='header'>
-                <p>{{request.user.full_name}}</p>
-              </div>
-
-        <div>
-<center><h1>Birth Children Report from {{start}} to {{to}} </h1></center>
-
-          <table id="table"  border="1" style="padding-top: 10px;">
-            <thead class="daked">
-              <tr class="daked">
+{% extends 'base/healthCenter/basePdf.html'%}
+       
+          <table id="table"  border="0" style="padding-top: 10px;">
+            <td style="width:20%"><img src="static/images/undraw_medicine_b1ol.png" class="imgs" /></td>
+            {%block name %}<td style="width:auto;margin-left:100px"><u><h1>Birth Children Report from {{start}} to {{to}} </h1></u></center></td>{%endblock%}
+                 
+            {% block table%}
+              <tr class="">
+                <th>Number</th>
                 <th>Full Name</th>
                 <th>Father name</th>
                 <th>Mother name</th>
@@ -76,9 +19,12 @@
               </tr>
             </thead>
             <tbody>
+              {% comment %} {% set x = 0 %} {% endcomment %}
               {%for dt in all_mal%}
-
-              <tr style="padding-top: 10px;">
+        
+              <ol type="1">
+              <tr>
+                <td>{{forloop.counter}}</td>
                 <td class="capitialise">{{dt.full_name|title}}   {{dt.lastname|title}}</td>
                 <td>{{dt.family.father_full_name|title}}</td>
                 <td>{{dt.family.mother_full_name|title}}</td>
@@ -89,13 +35,9 @@
                 <td>{{dt.birth_date}}</td>
                 <td>{{dt.created_on}}</td>
               </tr>
-            {% endfor%}
-            
-          
-            </tbody>
-          </table>
-    </div>
-    <hr>
-    <p style="text-align:center;"><i>Rwanda Health Worker</i></p>
-    </body>
-</html>
+              {% empty %}
+      <li>No result.</li>
+    </ol>
+              {% endfor%}
+              {%endblock%}
+      
