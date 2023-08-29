@@ -1,5 +1,5 @@
 from django.urls import path
-from healthCenter.views import (user_logout,change_pass,active_user,disactive_user,settings_user,delete_birth,edit_birth,delete_pregnancy,edit_pregnancy,pregnancy_woman,birth_child,house_hold,patient,login,home_health_center,malnutrition,contraception,members)
+from healthCenter.views import (change_location,user_logout,change_pass,active_user,disactive_user,settings_user,delete_birth,edit_birth,delete_pregnancy,edit_pregnancy,pregnancy_woman,birth_child,house_hold,patient,login,home_health_center,malnutrition,contraception,members)
 
 urlpatterns = [
     path('',login,name='login'),
@@ -20,6 +20,7 @@ urlpatterns = [
     path('active/<uuid:pk>/',active_user,name="active_user"),
     path('change-pass/',change_pass,name="change_pass"),
     path('logout/',user_logout,name="logout"),
+    path('chnage/location/',change_location,name="change_location"),
     
 
 ]

@@ -9,7 +9,7 @@ from django.db.models import Q
 
 
 from utils.pdf_generator import render_to_pdf
-from healthCenter.forms import LoginForm, UserChangePassword, UserInfoPassword
+from healthCenter.forms import ClinicAddressForm, LoginForm, UserChangePassword, UserInfoPassword
 from accounts.decoration import is_health_center
 from home.models import *
 from accounts.models import Village,UserAddress
@@ -45,18 +45,25 @@ def home_health_center(request):
     this_month_tube=records.filter(sickness=Patient.TUBERCULOSIS)
     all_mal=Malnutrition.objects.filter(worker__in=memebrs,has_malnutrition=True).count()
     all_contra=Contraception.objects.filter(worker__in=memebrs,created_on__month=date.today().month).count()
-
+    try:
+        this_month_child_incr=this_month_child.filter(created_on__month=date.today().month).count()*100/this_month_child.count()
+        this_month_maralia_incr=this_month_maralia.filter(created_on__month=date.today().month).count()*100/this_month_maralia.count()
+        this_month_tube_incr=this_month_tube.filter(created_on__month=date.today().month).count()*100/this_month_tube.count()
+    except:
+        this_month_child_incr=0
+        this_month_maralia_incr=0
+        this_month_tube_incr=0
     context={
         'members':memebrs.count(),
         'malnutrition':all_mal,
         'contraception':all_contra,
         'activites':records.values('worker__full_name','worker__phone_number').annotate(c=Count('worker')).order_by('-c')[:5],
         'this_month_child':this_month_child.filter(created_on__month=date.today().month).count(),
-        'this_month_child_incr':this_month_child.filter(created_on__month=date.today().month).count()*100/this_month_child.count(),
+        'this_month_child_incr':this_month_child_incr,
         'this_month_maralia':this_month_maralia.filter(created_on__month=date.today().month).count(),
-        'this_month_maralia_incr':this_month_maralia.filter(created_on__month=date.today().month).count()*100/this_month_maralia.count(),
+        'this_month_maralia_incr':this_month_maralia_incr,
         'this_month_tube':this_month_tube.filter(created_on__month=date.today().month).count(),
-        'this_month_tube_incr':this_month_tube.filter(created_on__month=date.today().month).count()*100/this_month_tube.count()
+        'this_month_tube_incr':this_month_tube_incr
         }
     return render(request,'dashboard/home.html',context)
 
@@ -322,6 +329,7 @@ def edit_birth(request,pk):
     try:
         all_mal=BirthChild.objects.get(id=pk)
         form=BirthChildForm(instance=all_mal)
+        
         context={
         "inst":all_mal,
         'form':form
@@ -347,8 +355,10 @@ def delete_birth(request,pk):
 
 def settings_user(request):
     info_form=UserInfoPassword()
+    loc=ClinicAddressForm(instance=request.user.clinic_address)
     context={
-        "info_form":info_form
+        "info_form":info_form,
+        "loc_form":loc
     }
     if request.method=='POST':
         info_form = UserInfoPassword(request.POST, instance=request.user)
@@ -394,6 +404,18 @@ def active_user(request,pk):
     return redirect('members')
 
 
+
 def user_logout(request):
     auth.logout(request)
     return redirect('login')
+
+
+def change_location(request):
+    if request.method == 'POST':
+        form_pass =ClinicAddressForm(request.POST,instance=request.user.clinic_address)
+
+        if form_pass.is_valid():
+            form_pass.save()
+            
+    return redirect('settings_user')
+     

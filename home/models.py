@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.forms import ValidationError
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from accounts.models import User,Village
@@ -105,3 +106,42 @@ class Contraception(models.Model):
 
     def get_absolute_url(self):
         return reverse("contraception_detail", kwargs={"pk": self.pk})
+    
+
+class Documenation(models.Model):
+    UMUJYANAMA="UMUJYANAMA"
+    HC="HC"
+    USER="USER"
+    
+    USER_RELATED = (
+        (UMUJYANAMA,"Umujyana"),
+        (HC,"Health Center"),
+        (USER,"User")
+       
+    )
+    def validate_file_extension(value):
+        import os
+        ext = os.path.splitext(value.name)[1]
+        valid_extensions = ['.pdf']
+        if not ext in valid_extensions:
+            raise ValidationError(u'we support Pdf only !')
+        
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    document_name=models.CharField(max_length=250)
+    user_related=models.CharField(
+        _("user related"), choices=USER_RELATED, max_length=50, default=UMUJYANAMA
+    )
+    is_verify= models.BooleanField(_("is verify"), default=False)
+    document_file=models.FileField(upload_to="documentations",validators=[validate_file_extension])
+    user=models.ForeignKey(User,related_name='uploaded_by',on_delete=models.CASCADE)
+    created_on = models.DateTimeField(_("created on"), auto_now_add=True)
+    
+    class Meta:
+        verbose_name = _("Documenation")
+        verbose_name_plural = _("Documenation")
+        ordering = ('-created_on',)
+
+
+    def get_absolute_url(self):
+        return reverse("documenation_detail", kwargs={"pk": self.pk})
+    

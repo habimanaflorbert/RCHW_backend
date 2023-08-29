@@ -6,8 +6,8 @@ from rest_framework.permissions import AllowAny,BasePermission
 from rest_framework.decorators import action
 
 
-from home.models import Patient,HouseHold,Malnutrition,Contraception
-from home.serializers import PatientSerializer,HouseHoldSerializer,MalnutritionSerializer,ContraceptionSerializer
+from home.models import Documenation, Patient,HouseHold,Malnutrition,Contraception
+from home.serializers import DocumenationSerializer, PatientSerializer,HouseHoldSerializer,MalnutritionSerializer,ContraceptionSerializer
 
 # Create your views here.
 
@@ -194,3 +194,25 @@ class ContraceptionViewset(viewsets.ModelViewSet):
             ob.delete()
             return Response({"msg":"has deleted"})
         return Response({"msg":"no data found"})
+
+
+class DocumentationViewset(viewsets.ModelViewSet):
+    serializer_class = DocumenationSerializer
+    permission_classes = [BasePermission]
+    queryset = Documenation.objects.all()
+
+
+    def get_queryset(self):
+        return Documenation.objects.filter(user_related=self.request.user.user_type,is_verify=True)
+
+    @action(['GET'],detail=False)
+    def detail(self,request):
+        try:
+            id=request.GET.get('id')
+            query=Documenation.objects.get(id=id,is_verify=True)
+            serializer = self.get_serializer(query)
+           
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Documenation.DoesNotExist:
+            return Response({},status=status.HTTP_204_NO_CONTENT)
+    

@@ -237,8 +237,8 @@ class ClinicWorker(models.Model):
     members=models.ManyToManyField(User,related_name='members')
 
     class Meta:
-        verbose_name = _("Clinic")
-        verbose_name_plural = _("Clinics")
+        verbose_name = _("Clinic Worker")
+        verbose_name_plural = _("Clinic Workers")
         ordering = ('clinic',)
 
 
@@ -248,7 +248,7 @@ class ClinicWorker(models.Model):
 
 class ClinicAddress(models.Model):
     clinic=models.OneToOneField(User,related_name='clinic_address',on_delete=models.CASCADE)
-    sector=models.ForeignKey(Sector,on_delete=models.CASCADE,related_name='clinic_sector')
+    sector=models.ForeignKey(Sector,on_delete=models.SET_NULL,related_name='clinic_sector',blank=True, null=True)
 
     class Meta:
         verbose_name = _("Clinic address")

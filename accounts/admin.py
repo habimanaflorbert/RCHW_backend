@@ -92,6 +92,8 @@ class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
         if change:
             pass
         else:
+            password=get_random_string(8)
+            
             message=f"Hello {form.data['full_name'] }! \n You have granted permission web app of RCHW as health center of {request.user.full_name} here's crendetials:\n username:{form.data['username']} \n password:{form.data['password1']} \nPlease change password after login to the system \nThank you for using RCHW.  "
             subj="You have granted to be permission"
             send_mail_task(message,subj,form.data['email'])
@@ -118,19 +120,39 @@ admin.site.register(Province)
 admin.site.register(District)
 admin.site.register(Sector)
 admin.site.register(Village)
-admin.site.register(ClinicWorker)
+
+@admin.register(ClinicWorker)
+class ClinicWorkerAdmin(admin.ModelAdmin):
+    list_display = ('clinic',)
+    search_fields = ['clinic',]
+    
+    def render_change_form(self, request, context, *args, **kwargs):
+        context['adminform'].form.fields['members'].queryset = User.objects.filter(user_type=User.UMUJYANAMA)
+        return super().render_change_form(request, context, *args, **kwargs)
+
 
 @admin.register(UserAddress)
 class UserAddressAdmin(admin.ModelAdmin):
     list_display = ('user', 'village')
     list_display_links = ['user']
     search_fields = ['user']
+    def render_change_form(self, request, context, *args, **kwargs):
+        context['adminform'].form.fields['user'].queryset = User.objects.filter(user_type=User.UMUJYANAMA)
+        return super().render_change_form(request, context, *args, **kwargs)
+
+    
+
 
 @admin.register(ClinicAddress)
-class UserAddressAdmin(admin.ModelAdmin):
+class ClinicAddressAdmin(admin.ModelAdmin):
     list_display = ('clinic', 'sector')
     list_display_links = ['clinic']
     search_fields = ['clinic']
+    
+    def render_change_form(self, request, context, *args, **kwargs):
+        context['adminform'].form.fields['clinic'].queryset = User.objects.filter(user_type=User.HC)
+        return super().render_change_form(request, context, *args, **kwargs)
+
 
 
 admin.site.index_template='admin/admin_user.html'

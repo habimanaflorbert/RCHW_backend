@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.hashers import check_password
 from home.models import HouseHold
 from healthCenter.models import *
+from accounts.models import ClinicAddress
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=200, min_length=3, required=True)
@@ -55,3 +56,9 @@ class UserInfoPassword(forms.ModelForm):
     class Meta:
         model = User
         fields = ('full_name', 'phone_number')
+        
+
+class ClinicAddressForm(forms.ModelForm):
+    class Meta:
+        model = ClinicAddress
+        fields = ('sector',)

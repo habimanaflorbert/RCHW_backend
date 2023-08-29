@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from accounts.serializers import UserSerializer,VillageSerializer
-from home.models import Patient,HouseHold, Malnutrition,Contraception
+from home.models import Documenation, Patient,HouseHold, Malnutrition,Contraception
 
 
 class PatientSerializer(serializers.ModelSerializer):
@@ -75,6 +75,17 @@ class ContraceptionSerializer(serializers.ModelSerializer):
             'family_detail',
             'description',
             'worker',
+            'created_on'
+        )
+
+class DocumenationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Documenation
+        fields=(
+            'id',
+            'document_name',
+            'user_related',
+            'document_file',
             'created_on'
         )
 

@@ -31,3 +31,25 @@ class ContraceptionAdmin(admin.ModelAdmin):
     list_display_links = ['family']
     search_fields = ['family']
   
+@admin.register(Documenation)
+class DocumenationAdmin(admin.ModelAdmin):
+    list_display = ('document_name','user_related','is_verify','user','created_on')
+    list_display_links = ['document_name']
+    search_fields = ['document_name']
+    ist_filter = ("user_related",)
+    actions = [
+        "accept_document",
+        "reject_document",
+    ]
+    fields = ('document_name', 'user_related', 'document_file',)
+    
+    def accept_document(self, request, queryset):
+        queryset.update(is_verify=True)
+        
+    def reject_document(self, request, queryset):
+        queryset.update(is_verify=False)
+  
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        obj.is_verify=True
+        return super().save_model(request, obj, form, change)
