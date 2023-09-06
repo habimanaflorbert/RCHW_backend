@@ -1,3 +1,4 @@
+from healthCenter.models import Pregnancy,BirthChild
 from rest_framework import serializers
 from accounts.serializers import UserSerializer,VillageSerializer
 from home.models import Documenation, Patient,HouseHold, Malnutrition,Contraception
@@ -89,5 +90,33 @@ class DocumenationSerializer(serializers.ModelSerializer):
             'created_on'
         )
 
+
+class BirthChildSerializer(serializers.ModelSerializer):
+    family_detail=HouseHoldSerializer(source='family',read_only=True)
+    village_detail=VillageSerializer(source='village',read_only=True)
+    class Meta:
+        model=BirthChild
+        fields=(
+            'id',
+            'full_name',
+            'family',
+            'family_detail',
+            'village_detail',
+            'village',
+            'created_on'
+        )
+
+class PregnancySerializer(serializers.ModelSerializer):
+    village_detail=VillageSerializer(source='village',read_only=True)
+    class Meta:
+        model=Pregnancy
+        fields=(
+            'id',
+            'full_name',
+            'phone',
+            'village',
+            'village_detail',
+            'created_on'
+        )
 
  

@@ -1,4 +1,5 @@
 import datetime
+from healthCenter.models import BirthChild, Pregnancy
 from rest_framework.viewsets import mixins
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -7,7 +8,7 @@ from rest_framework.decorators import action
 
 
 from home.models import Documenation, Patient,HouseHold,Malnutrition,Contraception
-from home.serializers import DocumenationSerializer, PatientSerializer,HouseHoldSerializer,MalnutritionSerializer,ContraceptionSerializer
+from home.serializers import BirthChildSerializer, DocumenationSerializer, PatientSerializer,HouseHoldSerializer,MalnutritionSerializer,ContraceptionSerializer, PregnancySerializer
 
 # Create your views here.
 
@@ -216,3 +217,20 @@ class DocumentationViewset(viewsets.ModelViewSet):
         except Documenation.DoesNotExist:
             return Response({},status=status.HTTP_204_NO_CONTENT)
     
+class ChildViewset(viewsets.ModelViewSet):
+    serializer_class = BirthChildSerializer
+    permission_classes = [BasePermission]
+    queryset = BirthChild.objects.all()
+
+
+    def get_queryset(self):
+        return BirthChild.objects.filter(vigirant=self.request.user,is_valid=True)
+
+class PregnancyViewset(viewsets.ModelViewSet):
+    serializer_class = PregnancySerializer
+    permission_classes = [BasePermission]
+    queryset = Pregnancy.objects.all()
+
+
+    def get_queryset(self):
+        return Pregnancy.objects.filter(vigirant=self.request.user,is_valid=True)

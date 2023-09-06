@@ -15,6 +15,8 @@ class BirthChild(models.Model):
     clinic=models.ForeignKey(User,related_name='child_clinic',on_delete=models.CASCADE)
     village=models.ForeignKey(Village,related_name='child_village',on_delete=models.CASCADE)
     birth_date=models.DateTimeField(auto_now_add=False)
+    vigirant=models.ForeignKey(User,on_delete=models.SET_NULL,related_name='vigitant_birth',blank=True, null=True)
+    is_valid= models.BooleanField(_("active"), default=True)
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
 
     class Meta:
@@ -37,6 +39,8 @@ class Pregnancy(models.Model):
     village=models.ForeignKey(Village,related_name='pregant_village',on_delete=models.CASCADE)
     give_birth=models.BooleanField(default=False)
     clinic=models.ForeignKey(User,related_name='pregnancy_clinic',on_delete=models.CASCADE)
+    vigirant=models.ForeignKey(User,on_delete=models.SET_NULL,related_name='vigitant_pregnancy',blank=True, null=True)
+    is_valid= models.BooleanField(_("active"), default=True)
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
 
     class Meta:

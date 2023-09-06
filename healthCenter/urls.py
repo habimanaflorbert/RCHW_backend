@@ -1,5 +1,5 @@
 from django.urls import path
-from healthCenter.views import (change_location,user_logout,change_pass,active_user,disactive_user,settings_user,delete_birth,edit_birth,delete_pregnancy,edit_pregnancy,pregnancy_woman,birth_child,house_hold,patient,login,home_health_center,malnutrition,contraception,members)
+from healthCenter.views import (assign_pregnancy,assign_kid,change_location, remove_birth, remove_pregnancy,user_logout,change_pass,active_user,disactive_user,settings_user,delete_birth,edit_birth,delete_pregnancy,edit_pregnancy,pregnancy_woman,birth_child,house_hold,patient,login,home_health_center,malnutrition,contraception,members)
 
 urlpatterns = [
     path('',login,name='login'),
@@ -18,9 +18,13 @@ urlpatterns = [
     path('setting/',settings_user,name="settings_user"),
     path('disactive/<uuid:pk>/',disactive_user,name="disactive_user"),
     path('active/<uuid:pk>/',active_user,name="active_user"),
-    path('change-pass/',change_pass,name="change_pass"),
+    path('change/pass/',change_pass,name="change_pass"),
     path('logout/',user_logout,name="logout"),
-    path('chnage/location/',change_location,name="change_location"),
+    path('change/location/',change_location,name="change_location"),
+    path('assign/kid/<uuid:pk>/',assign_kid,name="assign_kid"),
+    path('assign/pregnancy/<uuid:pk>/',assign_pregnancy,name="assign_pregnancy"),
+    path('remove/pregnancy/<uuid:pk>/',remove_pregnancy,name="remove_pregnancy"),
+    path('remove/birth/<uuid:pk>/',remove_birth,name="remove_birth"),
     
 
 ]

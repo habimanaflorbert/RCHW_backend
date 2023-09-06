@@ -1,0 +1,69 @@
+{% extends 'base/healthCenter/base.html'%}
+{% block css%}
+<!-- UIkit CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/css/uikit.min.css" />
+<!-- UIkit JS -->
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/js/uikit-icons.min.js"></script>
+{%endblock%}
+{% block main%}
+
+<section class="container px-4 mx-auto mt-10">
+
+<div class="flex items-center justify-center p-4">
+  
+  
+    <div class="mx-auto w-full max-w-[550px]">
+        {%if form.errors%}
+        <div class="uk-alert-danger" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p>{{form.errors}}</p>
+        </div>
+        {%endif%}
+        
+        {% if messages %}
+        <div class="uk-alert-success" uk-alert>
+          {% for message in messages %}
+          <a class="uk-alert-close" uk-close></a>
+          <p class="added">{{ message }}</p>
+          {% endfor %}
+        </div>
+        {% endif%}
+
+      <form method="POST">
+        {% csrf_token%}
+        <h4 class="mb-3 block text-[#07074D] font-bold underline text-xl text-center">Assign Health worker to Kid</h3>
+             
+          <div class="max-w-2xl mx-auto my-4">
+
+            <label for="countries" class="mb-3 block text-base font-medium text-[#07074D]">Select a Health worker</label>
+                <select
+                name="vigirant"
+                id="countries" class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md">
+                {%for dt in form.vigirant%}
+                {{dt}}
+                {%endfor%}
+       
+            </select>
+        
+         
+        </div>
+   
+  
+        <div class="flex flex-wrap">
+            <div class="w-1/2">   <button
+                class="uk-button  text-center text-white AppBgColor rounded-md"
+              >
+                Assign
+              </button></div>
+            
+           </div>
+      </form>
+    </div>
+  </div>
+
+
+
+</section>
+
+{%endblock%}

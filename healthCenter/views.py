@@ -9,7 +9,7 @@ from django.db.models import Q
 
 
 from utils.pdf_generator import render_to_pdf
-from healthCenter.forms import ClinicAddressForm, LoginForm, UserChangePassword, UserInfoPassword
+from healthCenter.forms import BirthAssignForm, ClinicAddressForm, LoginForm, PregnancyAssign, UserChangePassword, UserInfoPassword
 from accounts.decoration import is_health_center
 from home.models import *
 from accounts.models import Village,UserAddress
@@ -146,7 +146,7 @@ def members(request):
         if form.is_valid():
             req=form.save(commit=False)
             new_pass=get_random_string(8)
-            req.password=new_pass
+            req.set_password(new_pass)
             req.username=request.POST['phone_number']
             req.save()
             request.user.clinic.members.add(req)
@@ -219,7 +219,7 @@ def house_hold(request):
 
 @is_health_center
 def birth_child(request):
-    all_mal=BirthChild.objects.filter(clinic=request.user)
+    all_mal=BirthChild.objects.filter(clinic=request.user,is_valid=True)
     paginator=Paginator(all_mal, 2)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -267,7 +267,7 @@ def birth_child(request):
     
 @is_health_center
 def pregnancy_woman(request):
-    all_mal=Pregnancy.objects.filter()
+    all_mal=Pregnancy.objects.filter(is_valid=True)
     paginator=Paginator(all_mal, 2)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -413,9 +413,72 @@ def user_logout(request):
 def change_location(request):
     if request.method == 'POST':
         form_pass =ClinicAddressForm(request.POST,instance=request.user.clinic_address)
-
         if form_pass.is_valid():
             form_pass.save()
             
     return redirect('settings_user')
      
+def assign_kid(request,pk):
+    try:
+        members= request.user.clinic_members
+        all_mal=BirthChild.objects.get(id=pk)
+        form=BirthAssignForm(instance=all_mal,users=members)
+        
+        context={
+        "inst":all_mal,
+        'form':form
+         }
+        if request.method=='POST':
+            form=BirthAssignForm(request.POST,instance=all_mal,users=members)
+            if form.is_valid():
+                form.save(commit=True)
+                messages.success(request, 'assigned successful')
+
+            context['context']=form
+    except Pregnancy.DoesNotExist:
+        pass
+      
+    return render(request,'healtfeature/birthAssign.html',context)
+
+
+def assign_pregnancy(request,pk):
+    try:
+        members= request.user.clinic_members
+        all_mal=Pregnancy.objects.get(id=pk)
+        form=PregnancyAssign(instance=all_mal,users=members)
+        
+        context={
+        "inst":all_mal,
+        'form':form
+         }
+        if request.method=='POST':
+            form=PregnancyAssign(request.POST,instance=all_mal,users=members)
+            if form.is_valid():
+                form.save(commit=True)
+                messages.success(request, 'assigned successful')
+
+            context['context']=form
+    except Pregnancy.DoesNotExist:
+        pass
+      
+    return render(request,'healtfeature/pregnancyAssign.html',context)
+
+def remove_pregnancy(request,pk):
+    try:
+        all_mal=Pregnancy.objects.get(id=pk)
+        all_mal.is_valid=False
+        all_mal.save()
+        messages.success(request, 'Successful')
+    except User.DoesNotExist:
+        pass
+    return redirect('pregnancy_woman')
+
+def remove_birth(request,pk):
+    try:
+        all_mal=BirthChild.objects.get(id=pk)
+        all_mal.is_valid=False
+        all_mal.save()
+        messages.success(request, 'Successful')
+    except User.DoesNotExist:
+        pass
+    return redirect('birth_child')

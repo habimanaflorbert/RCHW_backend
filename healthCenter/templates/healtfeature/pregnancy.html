@@ -92,6 +92,10 @@
                                     Village
                                 </th>
 
+                                <th scope="col" class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    Assigned Health worker
+                                </th>
+
 
                                 <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Created at</th>
                                 <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Action</th>
@@ -121,7 +125,7 @@
 
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                     <div>
-                                        <h4 class="text-gray-700 dark:text-gray-200">{{contact.birth_date}}</h4>
+                                        <h4 class="text-gray-700 dark:text-gray-200">{{contact.birth_date|date}}</h4>
                                     </div>
                                 </td>
                                 <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
@@ -130,7 +134,12 @@
                                     </div>
                                 </td>
                             
-
+                                <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                                    <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                      {{contact.vigirant}}
+                                    </div>
+                                </td>
+                            
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                     {{contact.created_on}}
                                 </td>
@@ -138,15 +147,32 @@
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                    <div class="flex w-full gap-2">
                                    {% if contact.clinic  == request.user %}
+                                   <button type="button"  uk-toggle="target: #modal-example-2" class="inline px-3 py-1 text-sm font-normal rounded-full text-red-500 gap-x-2 bg-red-600 dark:bg-gray-800">
+                                        Remove
+                                   </button>
                                    <a href="{% url 'edit_pregnancy' contact.id%}">
                                     <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
                                         Edit
                                     </div></a>
+                                    <a href="{% url 'assign_pregnancy' contact.id%}">
+                                        <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                            Assign
+                                        </div></a>
                                     {%endif%}
                                    
                                    </div>
                                 </td>
                             </tr>
+                            <div id="modal-example-2" uk-modal>
+                                <div class="uk-modal-dialog uk-modal-body">
+                                    <h2 class="uk-modal-title">Warning</h2>
+                                    <p>Are you sure  u want remove to the list  <span class="text-green-500">{{inst.full_name}}</span> ?</p>
+                                    <p class="uk-text-right">
+                                        <button class="uk-button bg-blue-700 hover:bg-blue-500 text-white rounded-md uk-modal-close" type="button">No</button>
+                                        <a href="{% url 'remove_pregnancy' contact.id%}" class="uk-button bg-red-700 hover:bg-red-500 text-white rounded-md" type="button">Yes</a>
+                                    </p>
+                                </div>
+                            </div>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -291,4 +317,9 @@
 
     </div>
 </div>
+
+
+
+
+
 {% endblock%}

@@ -20,11 +20,32 @@ class BirthChildForm(forms.ModelForm):
     class Meta:
         model = BirthChild
         fields = ('full_name','description','birth_date','village')
+    
+class BirthAssignForm(forms.ModelForm):
+    class Meta:
+        model = BirthChild
+        fields=('vigirant',)
+
+    def __init__(self, *args, **kwargs):
+        self.users = kwargs.pop('users', None)
+        super().__init__(*args, **kwargs)
+        self.fields["vigirant"].queryset =self.users
 
 class PregnancyForm(forms.ModelForm):
     class Meta:
         model = Pregnancy
-        fields = ('full_name','description','phone','birth_date','village')
+        fields = ('full_name','description','phone','birth_date','village','vigirant')
+
+class PregnancyAssign(forms.ModelForm):
+
+    class Meta:
+        model = Pregnancy
+        fields=('vigirant',)
+
+    def __init__(self, *args, **kwargs):
+        self.users = kwargs.pop('users', None)
+        super().__init__(*args, **kwargs)
+        self.fields["vigirant"].queryset =self.users
 
 
 class UserChangePassword(forms.ModelForm):
