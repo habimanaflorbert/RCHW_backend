@@ -145,3 +145,22 @@ class Documenation(models.Model):
     def get_absolute_url(self):
         return reverse("documenation_detail", kwargs={"pk": self.pk})
     
+class BookingMedical(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    full_name=models.CharField(max_length=50)
+    phone_number=models.CharField(max_length=16)
+    village=models.ForeignKey(Village,related_name='booking_village',on_delete=models.CASCADE)
+    description=models.TextField()
+    is_valid= models.BooleanField(_("is valid"), default=True)
+    worker=models.ForeignKey(User,related_name='umujyanama_booked',on_delete=models.SET_NULL,blank=True,null=True)
+    created_on = models.DateTimeField(_("created on"), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("Booking Medical")
+        verbose_name_plural = _("Booking Medicals")
+        ordering = ('-created_on',)
+
+
+
+    def get_absolute_url(self):
+        return reverse("bookinr_medical_detail", kwargs={"pk": self.pk})

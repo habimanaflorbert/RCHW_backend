@@ -1,7 +1,7 @@
 
 from django import forms
 from django.contrib.auth.hashers import check_password
-from home.models import HouseHold
+from home.models import *
 from healthCenter.models import *
 from accounts.models import ClinicAddress
 
@@ -83,3 +83,9 @@ class ClinicAddressForm(forms.ModelForm):
     class Meta:
         model = ClinicAddress
         fields = ('sector',)
+
+class BookingForm(forms.ModelForm):
+    class Meta:
+        model = BookingMedical
+        fields = ('full_name','phone_number','description','village')
+    

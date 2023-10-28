@@ -5,6 +5,39 @@ Welcome RCHW
 {%endblock%}
 
 {% block body%}
+
+<!-- component -->
+
+<script>
+// Navbar Toggle
+document.addEventListener('DOMContentLoaded', function () {
+
+// Get all "navbar-burger" elements
+var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+// Check if there are any navbar burgers
+if ($navbarBurgers.length > 0) {
+
+// Add a click event on each of them
+$navbarBurgers.forEach(function ($el) {
+  $el.addEventListener('click', function () {
+
+    // Get the "main-nav" element
+    var $target = document.getElementById('main-nav');
+
+    // Toggle the class on "main-nav"
+    $target.classList.toggle('hidden');
+
+  });
+});
+}
+
+});
+</script>
+
+
+
+
 <!-- component -->
 <!-- Container -->
 <div class="flex flex-wrap min-h-screen w-full content-center justify-center bg-gray-200 py-10">
@@ -43,11 +76,10 @@ Welcome RCHW
   
             <div class="mb-3">
               <button class="mb-1.5 block w-full text-center text-white AppBgColor px-2 py-1.5 font-semibold rounded-md">Sign in</button>
-              
             </div>
           </form>
   
-       
+       <a href="" class="mb-1.5 hover:bg-blue-700 hover:no-underline hover:text-white block w-full text-center text-sm text-white bg-blue-600 px-2 py-1.5 font-semibold rounded-md">Requesting Health worker</a>
         </div>
       </div>
   

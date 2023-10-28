@@ -1,7 +1,7 @@
 from healthCenter.models import Pregnancy,BirthChild
 from rest_framework import serializers
 from accounts.serializers import UserSerializer,VillageSerializer
-from home.models import Documenation, Patient,HouseHold, Malnutrition,Contraception
+from home.models import Documenation, Patient,HouseHold, Malnutrition,Contraception,BookingMedical
 
 
 class PatientSerializer(serializers.ModelSerializer):
@@ -119,4 +119,19 @@ class PregnancySerializer(serializers.ModelSerializer):
             'created_on'
         )
 
- 
+class BookingSerializer(serializers.ModelSerializer):
+    village_detail=VillageSerializer(source='village',read_only=True)
+    worker_detail=UserSerializer(source='worker',read_only=True)
+    class Meta:
+        model=BookingMedical
+        fields=(
+            'id',
+            'full_name',
+            'phone_number',
+            'village',
+            'village_detail',
+            'description',
+            'worker',
+            'worker_detail',
+            'created_on'
+        )

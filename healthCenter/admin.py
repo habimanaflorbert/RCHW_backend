@@ -15,4 +15,4 @@ class PatientAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'family','birth_date','clinic','created_on')
     list_display_links = ['full_name']
     search_fields = ['clinic','full_name']
-   
+

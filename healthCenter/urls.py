@@ -1,8 +1,10 @@
 from django.urls import path
-from healthCenter.views import (assign_pregnancy,assign_kid,change_location, remove_birth, remove_pregnancy,user_logout,change_pass,active_user,disactive_user,settings_user,delete_birth,edit_birth,delete_pregnancy,edit_pregnancy,pregnancy_woman,birth_child,house_hold,patient,login,home_health_center,malnutrition,contraception,members)
+from healthCenter.views import (request_health_worker,home_health,assign_pregnancy,assign_kid,change_location, remove_birth, remove_pregnancy,user_logout,change_pass,active_user,disactive_user,settings_user,delete_birth,edit_birth,delete_pregnancy,edit_pregnancy,pregnancy_woman,birth_child,house_hold,patient,login,home_health_center,malnutrition,contraception,members)
 
 urlpatterns = [
-    path('',login,name='login'),
+    path('',home_health,name="home_health"),
+    path('login/',login,name='login'),
+    path('request-health-worker/',request_health_worker,name='request_health_worker'),
     path('home/',home_health_center,name='home_health_center'),
     path('malnutrition/',malnutrition,name="malnutrition"),
     path('contraception/',contraception,name="contraception"),

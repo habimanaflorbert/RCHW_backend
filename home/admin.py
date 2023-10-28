@@ -36,7 +36,7 @@ class DocumenationAdmin(admin.ModelAdmin):
     list_display = ('document_name','user_related','is_verify','user','created_on')
     list_display_links = ['document_name']
     search_fields = ['document_name']
-    ist_filter = ("user_related",)
+    list_filter = ("user_related",)
     actions = [
         "accept_document",
         "reject_document",
@@ -53,3 +53,12 @@ class DocumenationAdmin(admin.ModelAdmin):
         obj.user = request.user
         obj.is_verify=True
         return super().save_model(request, obj, form, change)
+
+
+
+@admin.register(BookingMedical)
+class BookingMedicalAdmin(admin.ModelAdmin):
+    list_display = ('full_name','phone_number','created_on')
+    list_display_links = ['full_name']
+    search_fields = ['full_name','phone_number']
+    list_filter = ("created_on",)

@@ -42,9 +42,8 @@ class AccountCreationViewset(viewsets.ModelViewSet):
         except User.DoesNotExist:
             return Response({})
     
-    @action(['POST'],detail=False)
+    @action(['PATCH','POST'],detail=False)
     def password(self,request):
-   
         serializer = self.get_serializer(
             data=request.data)
         serializer.is_valid(raise_exception=True)

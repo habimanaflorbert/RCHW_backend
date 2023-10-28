@@ -7,8 +7,8 @@ from rest_framework.permissions import AllowAny,BasePermission
 from rest_framework.decorators import action
 
 
-from home.models import Documenation, Patient,HouseHold,Malnutrition,Contraception
-from home.serializers import BirthChildSerializer, DocumenationSerializer, PatientSerializer,HouseHoldSerializer,MalnutritionSerializer,ContraceptionSerializer, PregnancySerializer
+from home.models import Documenation, Patient,HouseHold,Malnutrition,Contraception,BookingMedical
+from home.serializers import BirthChildSerializer, DocumenationSerializer, PatientSerializer,HouseHoldSerializer,MalnutritionSerializer,ContraceptionSerializer, PregnancySerializer,BookingSerializer
 
 # Create your views here.
 
@@ -234,3 +234,31 @@ class PregnancyViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Pregnancy.objects.filter(vigirant=self.request.user,is_valid=True)
+
+class BookingViewset(viewsets.ModelViewSet):
+    serializer_class = BookingSerializer
+    permission_classes = [BasePermission]
+    queryset = BookingMedical.objects.all()
+
+    def get_queryset(self): 
+        return BookingSerializer.objects.filter(worker=self.request.user)
+
+    @action(['GET'],detail=False)
+    def booked_village(self,request):
+        try:
+            from datetime import date
+            query=BookingMedical.objects.filter(village__id=self.request.user.user_village,created_on__date=date.today())
+            serializer = self.get_serializer(query,many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except BookingMedical.DoesNotExist:
+            return Response({},status=status.HTTP_200_OK)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance =self.get_object()
+        instance.worker=self.request.user
+        instance.save()
+
+        serializer = self.get_serializer(
+            instance)
+        return Response(serializer.data)
+        

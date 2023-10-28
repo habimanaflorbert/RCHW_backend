@@ -9,7 +9,7 @@ from django.db.models import Q
 
 
 from utils.pdf_generator import render_to_pdf
-from healthCenter.forms import BirthAssignForm, ClinicAddressForm, LoginForm, PregnancyAssign, UserChangePassword, UserInfoPassword
+from healthCenter.forms import BookingForm,BirthAssignForm, ClinicAddressForm, LoginForm, PregnancyAssign, UserChangePassword, UserInfoPassword
 from accounts.decoration import is_health_center
 from home.models import *
 from accounts.models import Village,UserAddress
@@ -482,3 +482,24 @@ def remove_birth(request,pk):
     except User.DoesNotExist:
         pass
     return redirect('birth_child')
+
+def home_health(request):
+    return render(request,'auth/index.html')
+
+def request_health_worker(request):
+ 
+    form=BookingForm()
+    
+    context={
+    
+    'form':form
+        }
+    if request.method=='POST':
+        form=BookingForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+            messages.success(request, 'submitted successful')
+
+        context['context']=form
+
+    return render(request,'patient/requesting_health_worker.html',context)
