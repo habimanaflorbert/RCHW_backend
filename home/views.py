@@ -240,14 +240,26 @@ class BookingViewset(viewsets.ModelViewSet):
     permission_classes = [BasePermission]
     queryset = BookingMedical.objects.all()
 
-    def get_queryset(self): 
-        return BookingSerializer.objects.filter(worker=self.request.user)
+    def list(self,request):
+        from datetime import date
+        query=BookingMedical.objects.filter(worker=self.request.user,created_on__date=date.today())
+        serializer = self.get_serializer(query,many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+   
+    @action(['GET'],detail=False)
+    def request_detail(self,request):
+        try:
+            obj=BookingMedical.objects.get(id=request.GET['id'])
+            serializer=self.get_serializer(obj)
+            return Response(serializer.data)
+        except BookingMedical.DoesNotExist:
+            return Response(status=204)
 
     @action(['GET'],detail=False)
     def booked_village(self,request):
         try:
             from datetime import date
-            query=BookingMedical.objects.filter(village__id=self.request.user.user_village,created_on__date=date.today())
+            query=BookingMedical.objects.filter(is_valid=True,village__id=self.request.user.user_village,created_on__date=date.today())
             serializer = self.get_serializer(query,many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except BookingMedical.DoesNotExist:
@@ -256,6 +268,7 @@ class BookingViewset(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         instance =self.get_object()
         instance.worker=self.request.user
+        instance.is_valid=False
         instance.save()
 
         serializer = self.get_serializer(
