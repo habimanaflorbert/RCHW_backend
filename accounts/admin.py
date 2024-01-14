@@ -2,7 +2,7 @@ from django.contrib import admin
 from accounts.forms import UserAdminCreationForm, UserAdminChangeForm
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 # from django.contrib.auth import get_user_model
-from accounts.models import ClinicAddress,User,UserAddress,Province,District,Sector,Village,ClinicWorker
+from accounts.models import ClinicAddress, Deases,User,UserAddress,Province,District,Sector,Village,ClinicWorker
 from accounts.forms import send_mail_task,get_random_string
 
 class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
@@ -94,7 +94,7 @@ class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
         else:
             password=get_random_string(8)
             
-            message=f"Hello {form.data['full_name'] }! \n You have granted permission web app of RCHW as health center of {request.user.full_name} here's crendetials:\n username:{form.data['username']} \n password:{form.data['password1']} \nPlease change password after login to the system \nThank you for using RCHW.  "
+            message=f"Hello {form.data['full_name'] }! \n You have granted permission web app of RHW as health center of {request.user.full_name} here's crendetials:\n username:{form.data['username']} \n password:{form.data['password1']} \nPlease change password after login to the system \nThank you for using RHW.  "
             subj="You have granted to be permission"
             send_mail_task(message,subj,form.data['email'])
             # send_mail_task(obj.id,form.data['password1'])
@@ -153,9 +153,16 @@ class ClinicAddressAdmin(admin.ModelAdmin):
         context['adminform'].form.fields['clinic'].queryset = User.objects.filter(user_type=User.HC)
         return super().render_change_form(request, context, *args, **kwargs)
 
+@admin.register(Deases)
+class DeasesAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    list_display_links = ['name']
+    search_fields = ['name']
+    
+
 
 
 admin.site.index_template='admin/admin_user.html'
-admin.site.site_header = "RCHW"
-admin.site.site_title = "RCHW"
+admin.site.site_header = "RHW"
+admin.site.site_title = "RHW"
 admin.site.index_title = ""

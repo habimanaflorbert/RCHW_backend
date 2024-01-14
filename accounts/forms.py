@@ -69,6 +69,9 @@ class UserAdminChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 class UmujyanamaForm(forms.ModelForm):
+    phone_number=forms.CharField(max_length=13,min_length=13)
+    identification_number=forms.CharField(max_length=16,min_length=16)
     class Meta:
+        
         model = User
         fields = ('full_name','email','phone_number','identification_number')

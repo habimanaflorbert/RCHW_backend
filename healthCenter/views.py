@@ -152,7 +152,7 @@ def members(request):
             request.user.clinic.members.add(req)
             village=Village.objects.get(id=request.POST['village'])
             UserAddress.objects.create(user=req,village=village)
-            message=f"Hello dear {req.full_name} !\nYou have granted permission as Umujyanama wubuzima on mobile app as worker of {request.user.full_name} here's crendetials:\n username:{req.username} \n password:{new_pass} \nPlease change password after login to the system \nThank you for using RCHW.  "
+            message=f"Hello dear {req.full_name} !\nYou have granted permission as Umujyanama wubuzima on mobile app as worker of {request.user.full_name} here's crendetials:\n username:{req.username} \n password:{new_pass} \nPlease change password after login to the system \nThank you for using RHW.  "
             subj="You have granted to be umujyanama wubuzima"
             send_mail_task(message,subj,req.email)
             messages.success(request, 'added successful ')

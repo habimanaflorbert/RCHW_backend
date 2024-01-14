@@ -75,7 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(
         _("phone number"), max_length=255,unique=True
     )
-    identification_number= models.CharField(_("identification_number"),max_length=255)
+    identification_number= models.CharField(_("identification_number"),max_length=16)
     user_type = models.CharField(
         _("user type"), choices=USER_TYPE_CHOICE, max_length=50, default=UMUJYANAMA
     )
@@ -258,3 +258,19 @@ class ClinicAddress(models.Model):
 
     def get_absolute_url(self):
         return reverse("clinic_address_detail", kwargs={"pk": self.pk})
+
+
+class Deases(models.Model):
+    name=models.CharField(max_length=50)
+
+
+    class Meta:
+        verbose_name = _("dease")
+        verbose_name_plural = _("deases")
+        ordering = ('name',)
+
+    def __str__(self):
+            return self.name
+
+    def get_absolute_url(self):
+        return reverse("province_detail", kwargs={"pk": self.pk})

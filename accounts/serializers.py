@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from rest_framework import serializers
-from accounts.models import User,Sector,Village,UserAddress,Province,District
+from accounts.models import Deases, User,Sector,Village,UserAddress,Province,District
 
 
 class ProvinceSerializer(serializers.ModelSerializer):
@@ -118,3 +118,11 @@ class UserPasswordSerializer(serializers.ModelSerializer):
             'user'
         )
     
+
+class DeasesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Deases
+        fields=(
+            'id',
+            'name'
+        )

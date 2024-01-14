@@ -11,6 +11,9 @@ class LoginForm(forms.Form):
 
 
 class HouseHoldForm(forms.ModelForm):
+    phone_number=forms.CharField(max_length=13,min_length=13)
+    mother_id_no=forms.CharField(max_length=16,min_length=16)
+    father_id_no=forms.CharField(max_length=16,min_length=16)
     class Meta:
         model = HouseHold
         fields = ('father_full_name', 'father_id_no','mother_full_name','mother_id_no','number_child','phone_number','village')
@@ -32,6 +35,7 @@ class BirthAssignForm(forms.ModelForm):
         self.fields["vigirant"].queryset =self.users
 
 class PregnancyForm(forms.ModelForm):
+    phone_number=forms.CharField(max_length=13,min_length=13)
     class Meta:
         model = Pregnancy
         fields = ('full_name','description','phone','birth_date','village','vigirant')
@@ -73,7 +77,7 @@ class UserChangePassword(forms.ModelForm):
         return user
     
 class UserInfoPassword(forms.ModelForm):
-   
+    phone_number=forms.CharField(max_length=13,min_length=13)
     class Meta:
         model = User
         fields = ('full_name', 'phone_number')
@@ -85,6 +89,7 @@ class ClinicAddressForm(forms.ModelForm):
         fields = ('sector',)
 
 class BookingForm(forms.ModelForm):
+    phone_number=forms.CharField(max_length=13,min_length=13)
     class Meta:
         model = BookingMedical
         fields = ('full_name','phone_number','description','village')

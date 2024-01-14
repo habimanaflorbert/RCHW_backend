@@ -8,23 +8,13 @@ from accounts.models import User,Village
 # Create your models here.
 
 class Patient(models.Model):
-    CHILDILLNESS="CHILDILLNESS"
-    MALARIA="MALARIA"
-    TUBERCULOSIS ="TUBERCULOSIS"
 
-
-
-    USER_DEASES_CHOICE = (
-        (CHILDILLNESS,"Childhood illnesses"),
-        (MALARIA,"Malaria"),
-        (TUBERCULOSIS,"Tuberculosis"),
-    )
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     full_name=models.CharField(max_length=255)
     insurance_name=models.CharField(max_length=50)
     insurance_number=models.CharField(max_length=200)
-    sickness=models.CharField(max_length=250, choices=USER_DEASES_CHOICE)
+    sickness=models.CharField(max_length=250)
     phone=models.CharField(max_length=13)
     village=models.ForeignKey(Village,related_name='patient_village',on_delete=models.CASCADE)
     date_of_birth=models.DateField(auto_created=False)

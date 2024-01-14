@@ -197,7 +197,7 @@
     <div class="mx-auto w-full max-w-[550px]">
       <form method="POST">
         {% csrf_token%}
-        <h4 class="mb-3 block text-[#07074D] font-bold underline text-xl text-center">Add Family form</h3>
+        <h4 class="mb-3 block text-[#07074D] font-bold underline text-xl text-center">Add Health worker form</h3>
         <div class="mb-5">
           <label
             for="name"
@@ -242,6 +242,8 @@
               name="phone_number"
               id="name"
               placeholder="+2507..."
+              max="13"
+              min="13"
               required
               class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"            />
           </div>
@@ -253,10 +255,12 @@
               Identification number
               </label>
               <input
-                type="number"
+                type="text"
                 name="identification_number"
                 id="name"
                 placeholder="11990..."
+                max="16"
+                min='16'
                 required
                 class="w-full block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-2 px-1.5 text-gray-500 focus:shadow-md"              />
             </div>
