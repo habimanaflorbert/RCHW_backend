@@ -7,6 +7,7 @@ import uuid
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext as _
 from django.urls import reverse
+from django.core.validators import MaxLengthValidator,MinLengthValidator
 
 # Create your models here.
 
@@ -73,9 +74,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(_("username"), max_length=100, unique=True)
     # unique phone number as it is a medium for user recognition
     phone_number = models.CharField(
-        _("phone number"), max_length=255,unique=True
+        _("phone number"), max_length=255,unique=True,validators=[
+            MinLengthValidator(limit_value=13),
+            MaxLengthValidator(limit_value=13)
+        ]
     )
-    identification_number= models.CharField(_("identification_number"),max_length=16)
+    identification_number= models.CharField(_("identification_number"),max_length=255,validators=[
+            MinLengthValidator(limit_value=16),
+            MaxLengthValidator(limit_value=16)
+        ])
     user_type = models.CharField(
         _("user type"), choices=USER_TYPE_CHOICE, max_length=50, default=UMUJYANAMA
     )
