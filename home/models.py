@@ -8,6 +8,9 @@ from accounts.models import User,Village
 # Create your models here.
 
 class Patient(models.Model):
+    MALARIA="MALARIA"
+    CHILDILLNESS="CHILDILLNESS"
+    TUBERCULOSIS="TUBERCULOSIS"
 
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)

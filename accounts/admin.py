@@ -5,8 +5,14 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from accounts.models import ClinicAddress, Deases,User,UserAddress,Province,District,Sector,Village,ClinicWorker
 from accounts.forms import send_mail_task,get_random_string
 
+class ClinicAddressTabularInline(admin.StackedInline):
+    model = ClinicAddress
+    # readonly_fields = ['sector']
+    extra = 0
+
 class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
     # The forms to add and change user instances
+    inlines=[ClinicAddressTabularInline]
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
     # The fields to be used in displaying the User model.
@@ -68,9 +74,7 @@ class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
             "username",
             "user_type",
             "phone_number",
-            "password1",
-            "password2"
-          
+         
         )}),
     )
     search_fields = (
@@ -93,8 +97,9 @@ class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
             pass
         else:
             password=get_random_string(8)
-            
-            message=f"Hello {form.data['full_name'] }! \n You have granted permission web app of RHW as health center of {request.user.full_name} here's crendetials:\n username:{form.data['username']} \n password:{form.data['password1']} \nPlease change password after login to the system \nThank you for using RHW.  "
+            obj.set_password(password)
+            obj.save()
+            message=f"Hello {form.data['full_name'] }! \n You have granted permission web app of RHW as health center of {request.user.full_name} here's crendetials:\n username:{form.data['username']} \n password:{password} \nPlease change password after login to the system \nThank you for using RHW.  "
             subj="You have granted to be permission"
             send_mail_task(message,subj,form.data['email'])
             # send_mail_task(obj.id,form.data['password1'])
@@ -139,6 +144,8 @@ class UserAddressAdmin(admin.ModelAdmin):
     def render_change_form(self, request, context, *args, **kwargs):
         context['adminform'].form.fields['user'].queryset = User.objects.filter(user_type=User.UMUJYANAMA)
         return super().render_change_form(request, context, *args, **kwargs)
+
+    
 
     
 

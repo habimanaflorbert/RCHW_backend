@@ -13,4 +13,4 @@ def user_signal(sender, instance, created, **kwargs):
     if created:
         if instance.user_type == User.HC:
             ClinicWorker.objects.create(clinic=instance)
-            ClinicAddress.objects.create(clinic=instance)
+            # ClinicAddress.objects.create(clinic=instance)

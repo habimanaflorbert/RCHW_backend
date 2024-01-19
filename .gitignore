@@ -1,0 +1,8 @@
+/env/
+/venv/
+**/__pycache__/**
+*__pycache__*
+.env
+/Logos
+whatslikeapp-30749-firebase-adminsdk-7oskc-3bf8377965.json
+logs.log

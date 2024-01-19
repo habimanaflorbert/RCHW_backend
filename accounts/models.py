@@ -256,8 +256,6 @@ class ClinicAddress(models.Model):
         ordering = ('sector',)
 
 
-    def get_absolute_url(self):
-        return reverse("clinic_address_detail", kwargs={"pk": self.pk})
 
 
 class Deases(models.Model):
