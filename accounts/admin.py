@@ -121,11 +121,33 @@ class UserAdmin(BaseUserAdmin, admin.ModelAdmin,):
 
 admin.site.register(User, UserAdmin)
 
-admin.site.register(Province)
-admin.site.register(District)
-admin.site.register(Sector)
-admin.site.register(Village)
 
+
+
+
+class DistrictTabularInline(admin.StackedInline):
+    model = District
+    extra = 1
+
+
+@admin.register(Province)
+class ProvinceAdmin(admin.ModelAdmin):
+    inlines=[DistrictTabularInline]
+    list_display = ('name',)
+    search_fields = ['name',]
+    
+    
+class VillageTabularInline(admin.StackedInline):
+    model = Village
+    extra = 1
+
+    
+@admin.register(Sector)
+class SectorAdmin(admin.ModelAdmin):
+    inlines=[VillageTabularInline]
+    list_display = ('name',)
+    search_fields = ['name',]
+    
 @admin.register(ClinicWorker)
 class ClinicWorkerAdmin(admin.ModelAdmin):
     list_display = ('clinic',)
@@ -141,6 +163,7 @@ class UserAddressAdmin(admin.ModelAdmin):
     list_display = ('user', 'village')
     list_display_links = ['user']
     search_fields = ['user']
+    
     def render_change_form(self, request, context, *args, **kwargs):
         context['adminform'].form.fields['user'].queryset = User.objects.filter(user_type=User.UMUJYANAMA)
         return super().render_change_form(request, context, *args, **kwargs)
