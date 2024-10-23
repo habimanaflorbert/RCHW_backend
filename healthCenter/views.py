@@ -38,17 +38,20 @@ def login(request):
 @is_health_center
 def home_health_center(request):
     from django.db.models import Count
-    memebrs=request.user.clinic_members
+    memebrs=request.user.clinic.members.all()
+    print([dt for dt in memebrs])
     records=Patient.objects.filter(worker__in=memebrs)
+    print(records)
     this_month_maralia=records.filter(sickness=Patient.MALARIA)
+    print(this_month_maralia)
     this_month_child=records.filter(sickness=Patient.CHILDILLNESS)
     this_month_tube=records.filter(sickness=Patient.TUBERCULOSIS)
     all_mal=Malnutrition.objects.filter(worker__in=memebrs,has_malnutrition=True).count()
     all_contra=Contraception.objects.filter(worker__in=memebrs,created_on__month=date.today().month).count()
     try:
-        this_month_child_incr=this_month_child.filter(created_on__month=date.today().month).count()*100/this_month_child.count()
-        this_month_maralia_incr=this_month_maralia.filter(created_on__month=date.today().month).count()*100/this_month_maralia.count()
-        this_month_tube_incr=this_month_tube.filter(created_on__month=date.today().month).count()*100/this_month_tube.count()
+        this_month_child_incr=this_month_child.count()*100/this_month_child.count()
+        this_month_maralia_incr=this_month_maralia.count()*100/this_month_maralia.count()
+        this_month_tube_incr=this_month_tube.count()*100/this_month_tube.count()
     except:
         this_month_child_incr=0
         this_month_maralia_incr=0
@@ -58,11 +61,11 @@ def home_health_center(request):
         'malnutrition':all_mal,
         'contraception':all_contra,
         'activites':records.values('worker__full_name','worker__phone_number').annotate(c=Count('worker')).order_by('-c')[:5],
-        'this_month_child':this_month_child.filter(created_on__month=date.today().month).count(),
+        'this_month_child':this_month_child.count(),
         'this_month_child_incr':this_month_child_incr,
-        'this_month_maralia':this_month_maralia.filter(created_on__month=date.today().month).count(),
+        'this_month_maralia':this_month_maralia.count(),
         'this_month_maralia_incr':this_month_maralia_incr,
-        'this_month_tube':this_month_tube.filter(created_on__month=date.today().month).count(),
+        'this_month_tube':this_month_tube.count(),
         'this_month_tube_incr':this_month_tube_incr
         }
     return render(request,'dashboard/home.html',context)
@@ -85,6 +88,7 @@ def malnutrition(request):
         start=request.POST.get('from')
         to=request.POST.get('to')
         all_mal=Malnutrition.objects.filter(worker__in=memebrs,has_malnutrition=True,created_on__range=[start,to])
+      
         pdf=render_to_pdf('pdfs/malnutrition.html',{'count':all_mal.count(),'all_mal':all_mal,'today':date.today(),'start':start,'to':to})
         return HttpResponse(pdf,content_type='application/pdf')
     elif request.GET.get("search"):
@@ -111,6 +115,7 @@ def contraception(request):
         start=request.POST.get('from')
         to=request.POST.get('to')
         all_mal=Contraception.objects.filter(worker__in=memebrs,created_on__range=[start,to])
+
         pdf=render_to_pdf('pdfs/contraception.html',{'count':all_mal.count(),'all_mal':all_mal,'today':date.today(),'start':start,'to':to})
         return HttpResponse(pdf,content_type='application/pdf')
     elif request.GET.get("search"):
@@ -163,7 +168,8 @@ def members(request):
 def patient(request):
     memebrs=request.user.clinic_members
     all_mal=Patient.objects.filter(worker__in=memebrs)
-    paginator=Paginator(all_mal, 2)
+ 
+    paginator=Paginator(all_mal, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     

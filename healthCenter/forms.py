@@ -89,7 +89,7 @@ class ClinicAddressForm(forms.ModelForm):
         fields = ('sector',)
 
 class BookingForm(forms.ModelForm):
-    phone_number=forms.CharField(max_length=10,min_length=10)
+    phone_number=forms.CharField(max_length=255)
     class Meta:
         model = BookingMedical
         fields = ('full_name','phone_number','description','village')

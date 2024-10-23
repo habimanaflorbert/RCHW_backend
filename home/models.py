@@ -140,7 +140,7 @@ class Documenation(models.Model):
     
 class BookingMedical(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    full_name=models.CharField(max_length=50)
+    name=models.CharField(max_length=50)
     phone_number=models.CharField(max_length=16)
     village=models.ForeignKey(Village,related_name='booking_village',on_delete=models.CASCADE)
     description=models.TextField()

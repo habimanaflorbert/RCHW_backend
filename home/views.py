@@ -270,12 +270,13 @@ class BookingViewset(viewsets.ModelViewSet):
         instance.worker=self.request.user
         instance.is_valid=False
         instance.save()
-        token = "eyJhbGciOiJub25lIn0.eyJpZCI6MjI2LCJyZXZva2VkX3Rva2VuX2NvdW50IjoxfQ."
+        token = "eyJhbGciOiJub25lIn0.eyJpZCI6InVzZXJfMDFIVDIwNVpXNVJNU0hYNlJNNURGWTdUWlMiLCJyZXZva2VkX3Rva2VuX2NvdW50IjowfQ."
         headers = {'Authorization': 'Bearer ' + token}
         data = {'to': f'+250{instance.phone_number}',
                 'text': f'Ubusabwe bwanyu bwemejwe mugihe gito {instance.worker.full_name} aragukurikirana aho uri Murakoze gukoresha Rwanda health worker! ', 'sender':'RWH'}
         url ='https://api.pindo.io/v1/sms/'
-        requests.post(url, json=data, headers=headers)
+        res=requests.post(url, json=data, headers=headers)
+        print(res)
 
         serializer = self.get_serializer(
             instance)
