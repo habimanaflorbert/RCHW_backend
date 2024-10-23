@@ -58,7 +58,7 @@ class DocumenationAdmin(admin.ModelAdmin):
 
 @admin.register(BookingMedical)
 class BookingMedicalAdmin(admin.ModelAdmin):
-    list_display = ('full_name','phone_number','created_on')
-    list_display_links = ['full_name']
-    search_fields = ['full_name','phone_number']
+    list_display = ('name','phone_number','created_on')
+    list_display_links = ['name']
+    search_fields = ['name','phone_number']
     list_filter = ("created_on",)
