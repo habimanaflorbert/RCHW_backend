@@ -27,8 +27,7 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-        # Give Postgres time to boot
-        timeout: 600s
+
 
     steps:
     - name: Check out the repository
